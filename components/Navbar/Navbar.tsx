@@ -24,7 +24,7 @@ const NavBar: FC<NavBarProps> = (props) => {
           <Link key={link.title} href={link.path} legacyBehavior>
             <a
               className={`btn btn-sm text-base normal-case rounded-md ${
-                router.pathname === link.path ? "btn-active" : "btn-outline"
+                router.pathname.startsWith(link.path) ? "btn-active" : "btn-outline"
               }`}
             >
               {link.title}

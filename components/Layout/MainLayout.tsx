@@ -10,7 +10,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
   return (
     <>
       <NavBar />
-      <main className="px-8 mt-8 min-h-screen">{children}</main>
+      <main className="mt-8 min-h-screen">{children}</main>
       <Footer />
     </>
   );
