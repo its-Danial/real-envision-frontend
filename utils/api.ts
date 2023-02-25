@@ -1,6 +1,7 @@
+import { ImageToImageGenerationParameters } from "./../models/models";
 import axiosClient from "./axiosClient";
 
-export const generateTextToImage = async (prompt: string) => {
-  const response = await axiosClient.get(`/text-to-image/?prompt=${prompt}`);
+export const generateTextToImage = async (parameters: ImageToImageGenerationParameters) => {
+  const response = await axiosClient.post(`/text-to-image`, parameters);
   return response;
 };

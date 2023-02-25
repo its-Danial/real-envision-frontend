@@ -5,6 +5,7 @@ import RiseLoader from "react-spinners/RiseLoader";
 import { generateTextToImage } from "../../../utils/api";
 import BasicCaptionCard from "../../../components/Card/BasicCaptionCard";
 import LabelRangeInput from "../../../components/Inputs/LabelRangeInput";
+import NegativePromptInput from "../../../components/Inputs/NegativePromptInput";
 
 const TextToImage: FC = () => {
   const [generationParameters, setGenerationParameters] = useState({
@@ -15,14 +16,16 @@ const TextToImage: FC = () => {
     guidance_scale: 8.5,
     negative_prompt: "",
     num_images_per_prompt: 1,
+    seed: Math.floor(Math.random() * 10000),
   });
-  const [generatedImages, setGeneratedImages] = useState();
+
+  const [generatedImages, setGeneratedImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
 
   const onGenerateClickHandler = async () => {
     setIsLoading(true);
-    const result = await generateTextToImage(generationParameters.prompt);
+    const result = await generateTextToImage(generationParameters);
     setGeneratedImages(result.data);
     console.log(generatedImages);
     setIsLoading(false);
@@ -56,7 +59,7 @@ const TextToImage: FC = () => {
             className="input input-bordered input-primary w-full"
           />
           <button
-            disabled={generationParameters.prompt.length === 0}
+            disabled={generationParameters.prompt.length === 0 || isLoading}
             onClick={onGenerateClickHandler}
             className="btn btn-primary normal-case"
           >
@@ -66,6 +69,11 @@ const TextToImage: FC = () => {
         {/* Note: Setting */}
         {showSetting && (
           <div className="px-8 pt-4 space-y-5">
+            <NegativePromptInput
+              id="negative_prompt"
+              value={generationParameters.negative_prompt}
+              onChange={onSettingsChangeHandler}
+            />
             <div className="flex justify-between">
               <div className="flex basis-4/5 space-x-6">
                 <LabelRangeInput
@@ -74,7 +82,7 @@ const TextToImage: FC = () => {
                   leftLabel="Prioritize creativity"
                   rightLabel="Prioritize prompt"
                   value={generationParameters.guidance_scale}
-                  minValue={0.0}
+                  minValue={1.5}
                   maxValue={10}
                   step={0.5}
                   onChange={onSettingsChangeHandler}
@@ -86,8 +94,8 @@ const TextToImage: FC = () => {
                   rightLabel="Better quality"
                   value={generationParameters.num_inference_steps}
                   minValue={10}
-                  maxValue={50}
-                  step={1}
+                  maxValue={100}
+                  step={10}
                   onChange={onSettingsChangeHandler}
                 />
                 <LabelRangeInput
@@ -103,11 +111,27 @@ const TextToImage: FC = () => {
                 />
               </div>
               <div className="flex justify-end space-x-6">
-                <div className="basis-1/3 flex flex-col space-y-1 justify-between">
+                <div className="basis-[40%] flex flex-col space-y-1 justify-between">
+                  <label className="text-lg font-semibold">Seed</label>
+                  <input
+                    type="number"
+                    placeholder="Seed"
+                    min={0}
+                    max={10000}
+                    value={generationParameters.seed}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      onSettingsChangeHandler("seed", parseInt(event.currentTarget.value))
+                    }
+                    className="input input-bordered input-sm input-primary w-full"
+                  />
+                </div>
+                <div className="basis-[30%] flex flex-col space-y-1 justify-between">
                   <label className="text-lg font-semibold">Width</label>
                   <input
                     type="number"
-                    placeholder="Type here"
+                    placeholder="Enter Width"
+                    min={32}
+                    max={712}
                     value={generationParameters.width}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                       onSettingsChangeHandler("width", parseInt(event.currentTarget.value))
@@ -115,11 +139,13 @@ const TextToImage: FC = () => {
                     className="input input-bordered input-sm input-primary w-full"
                   />
                 </div>
-                <div className="basis-1/3 flex flex-col space-y-1 justify-between">
+                <div className="basis-[30%] flex flex-col space-y-1 justify-between">
                   <label className="text-lg font-semibold">Height</label>
                   <input
                     type="number"
-                    placeholder="Type here"
+                    placeholder="Enter Height"
+                    min={32}
+                    max={712}
                     value={generationParameters.height}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                       onSettingsChangeHandler("height", parseInt(event.currentTarget.value))
@@ -141,22 +167,27 @@ const TextToImage: FC = () => {
         )}
       </div>
       {/* Note: Output */}
-      <div className="p-8 ">
-        {isLoading && <RiseLoader color="#1E293B" size={20} />}
-        {!isLoading && generatedImages && (
-          <Image
-            src={`data:image/png;base64,${generatedImages}`}
-            alt="generated image"
-            width={512}
-            height={512}
-            className="w-[512px] h-[512px]"
-          />
+      <div className="p-8 flex min-h-[350px]">
+        {isLoading && <RiseLoader color="#1E293B" size={30} className="m-auto" />}
+        {!isLoading && generatedImages.length != 0 && (
+          <div className="mx-auto grid grid-cols-2 gap-5">
+            {generatedImages.map((image) => (
+              <Image
+                key={Math.random()}
+                src={`data:image/png;base64,${image}`}
+                alt="generated image"
+                width={512}
+                height={512}
+                className="w-[512px] h-[512px]"
+              />
+            ))}
+          </div>
         )}
-        {!isLoading && !generatedImages && (
+        {!isLoading && generatedImages.length == 0 && (
           <BasicCaptionCard
             title="There is no image yet"
             text='Enter a text prompt and click "Generate", then wait a little bit for the images to be created'
-            style="mx-auto my-12"
+            style="m-auto"
           />
         )}
       </div>
