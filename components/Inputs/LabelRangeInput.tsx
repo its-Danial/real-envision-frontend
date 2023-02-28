@@ -30,10 +30,10 @@ const LabelRangeInput: FC<LabelRangeInputProps> = ({
 
   return (
     <div className="flex flex-col flex-1 space-y-1 justify-between">
-      <h5 className="transition ease-in-out delay-150 text-lg font-semibold">
+      <h5 className="transition ease-in-out delay-150 text-sm font-semibold">
         {title} (<span>{value}</span>)
       </h5>
-      <div className="flex flex-row justify-between text-sm">
+      <div className="flex flex-row justify-between text-xs">
         <p>{leftLabel}</p>
         <p>{rightLabel}</p>
       </div>

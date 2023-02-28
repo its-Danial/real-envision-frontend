@@ -14,7 +14,7 @@ const Create = () => {
           Diffusion Model
         </RoughNotation>
       </h1>
-      <div className="grid grid-cols-3 gap-5 gap-y-8">
+      <div className="grid grid-cols-3 gap-6 gap-y-9">
         <StudioCreateCard
           title="Text to Image"
           description="Text-to-Image understand your words and convert them to a unique image each time."

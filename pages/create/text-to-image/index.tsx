@@ -105,14 +105,14 @@ const TextToImage: FC = () => {
                   rightLabel=""
                   value={generationParameters.num_images_per_prompt}
                   minValue={1}
-                  maxValue={6}
+                  maxValue={4}
                   step={1}
                   onChange={onSettingsChangeHandler}
                 />
               </div>
               <div className="flex justify-end space-x-6">
                 <div className="basis-[40%] flex flex-col space-y-1 justify-between">
-                  <label className="text-lg font-semibold">Seed</label>
+                  <label className="text-sm font-semibold">Seed</label>
                   <input
                     type="number"
                     placeholder="Seed"
@@ -126,7 +126,7 @@ const TextToImage: FC = () => {
                   />
                 </div>
                 <div className="basis-[30%] flex flex-col space-y-1 justify-between">
-                  <label className="text-lg font-semibold">Width</label>
+                  <label className="text-sm font-semibold">Width</label>
                   <input
                     type="number"
                     placeholder="Enter Width"
@@ -140,7 +140,7 @@ const TextToImage: FC = () => {
                   />
                 </div>
                 <div className="basis-[30%] flex flex-col space-y-1 justify-between">
-                  <label className="text-lg font-semibold">Height</label>
+                  <label className="text-sm font-semibold">Height</label>
                   <input
                     type="number"
                     placeholder="Enter Height"
@@ -155,14 +155,6 @@ const TextToImage: FC = () => {
                 </div>
               </div>
             </div>
-            {/* <div className="flex flex-col space-y-1 justify-between w-fit">
-              <label className="text-lg font-semibold">Seed</label>
-              <p className="text-sm">Different seeds produce different images.</p>
-              <div className="flex space-x-2">
-                <input type="number" placeholder="Type here" className="input input-bordered input-sm input-primary" />
-                <button className="btn btn-primary btn-sm normal-case">Generate</button>
-              </div>
-            </div> */}
           </div>
         )}
       </div>
