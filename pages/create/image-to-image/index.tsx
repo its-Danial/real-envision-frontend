@@ -1,7 +1,8 @@
-import { FC, useState, useRef } from "react";
-import { BsImages } from "react-icons/bs";
+import { FC, useRef, useState } from "react";
 import Image from "next/image";
-import ImageUploadInput from "../../../components/Inputs/ImageUploadInput";
+import axios from "axios";
+import { BsImages } from "react-icons/bs";
+import ImageUploadForm from "../../../components/Inputs/ImageUploadForm";
 import LabelRangeInput from "../../../components/Inputs/LabelRangeInput";
 
 const ImageToImage: FC = () => {
@@ -22,9 +23,12 @@ const ImageToImage: FC = () => {
   const [generatedImages, setGeneratedImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const uploadImageHandler = (image: File) => {
-    console.log(image);
-    setUploadedImage(image);
+  const initialImageSubmitHandler = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!uploadedImage) {
+      alert("Upload an image");
+      return;
+    }
     mainScrollRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -35,30 +39,38 @@ const ImageToImage: FC = () => {
   };
 
   const onGenerateClickHandler = async () => {
-    console.log({ ...generationParameters, image: uploadedImage });
+    if (!uploadedImage) {
+      alert("Upload an image");
+      return;
+    }
+    if (generationParameters.prompt.length === 0) {
+      alert("Prompt is required");
+      return;
+    }
+    const fromData = new FormData();
+    fromData.append("initial_image", uploadedImage, uploadedImage.name);
+
+    for (const key in generationParameters) {
+      // @ts-ignore
+      fromData.append(key, generationParameters[key]);
+    }
+
+    console.log(fromData.get("strength"));
+
+    const response = await axios.post(`http://127.0.0.1:8000/image-to-image`, fromData);
+    const data = await response.data;
+    console.log(data);
   };
 
   return (
     <div>
       {/* note upload image area */}
       <div className="-mt-8 h-screen flex items-center justify-center">
-        <div className="h-3/4 w-3/4 rounded-2xl">
-          {uploadedImage && (
-            <div className="h-full space-y-5 flex flex-col justify-center items-center bg-base-200 border border-base-300 rounded-xl ">
-              <Image
-                width={350}
-                height={350}
-                src={URL.createObjectURL(uploadedImage)}
-                alt="uploaded Initial Image"
-                className="object-contain h-[80%] w-[80%]"
-              />
-              <button className="btn btn-primary mx-auto normal-case w-44" onClick={() => setUploadedImage(null)}>
-                Remove
-              </button>
-            </div>
-          )}
-          {!uploadedImage && <ImageUploadInput onUpload={uploadImageHandler} />}
-        </div>
+        <ImageUploadForm
+          onSubmit={initialImageSubmitHandler}
+          uploadedImage={uploadedImage}
+          setUploadedImage={setUploadedImage}
+        />
       </div>
       <main ref={mainScrollRef} id="main-section" className="flex h-screen">
         {/* note: Show edited Images place */}

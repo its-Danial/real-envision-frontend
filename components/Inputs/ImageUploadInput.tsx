@@ -14,7 +14,7 @@ const ImageUploadInput: FC<ImageUploadInputProps> = ({ onUpload }) => {
       </div>
       <input
         type="file"
-        accept="image/*"
+        accept=".jpeg, .png, .jpg"
         className="opacity-0 cursor-pointer"
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           if (!event.target.files) return;
