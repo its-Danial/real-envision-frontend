@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { MdCloudUpload, MdImagesearchRoller } from "react-icons/md";
+import { MdCloudUpload } from "react-icons/md";
 
 type ImageMaskUploadInputProps = {
   onClick: (image: File) => void;
@@ -7,11 +7,10 @@ type ImageMaskUploadInputProps = {
 
 const ImageMaskUploadInput: FC<ImageMaskUploadInputProps> = ({ onClick }) => {
   return (
-    <label className="cursor-pointer flex flex-col w-full h-full rounded-xl border-4 border-dashed hover:bg-gray-100 hover:border-gray-300">
+    <label className="upload-image-card">
       <div className="flex flex-col w-full h-full items-center justify-center ">
         <MdCloudUpload size={40} />
-
-        <p className="pt-1 text-sm text-gray-400 group-hover:text-gray-600">Upload an image mask</p>
+        <p className="pt-1 text-sm text-base-content">Upload an image mask</p>
       </div>
       <input
         type="file"

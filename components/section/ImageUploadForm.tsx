@@ -6,7 +6,7 @@ import UploadedImageBackgroundCard from "../card/UploadedImageBackgroundCard";
 type ImageUploadFormProps = {
   uploadedImage: File | null;
   setUploadedImage: Dispatch<SetStateAction<File | null>>;
-  onSubmit: (event: React.FormEvent) => void;
+  onSubmit?: (event: React.FormEvent) => void;
   buttonOptions: React.ReactNode;
 };
 

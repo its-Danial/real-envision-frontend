@@ -7,24 +7,19 @@ import { RiseLoader } from "react-spinners";
 
 type ImageMaskUploadFormProps = {
   imageMask: File | string | null;
-  setImageMask: Dispatch<SetStateAction<string | File | null>>;
+  onUploadImageMask: (image: File) => void;
   onGenerateMaskClick: () => void;
   maskIsLoading: boolean;
 };
 
-const ImageMaskUploadForm: FC<ImageMaskUploadFormProps> = ({
+const ImageMaskUploadSection: FC<ImageMaskUploadFormProps> = ({
   imageMask,
-  setImageMask,
+  onUploadImageMask,
   onGenerateMaskClick,
   maskIsLoading,
 }) => {
-  const uploadImageHandler = (image: File) => {
-    console.log(image);
-    setImageMask(image);
-  };
-
   return (
-    <div className="h-3/4 w-3/4 rounded-2xl flex flex-col gap-2">
+    <section className="h-3/4 w-3/4 rounded-2xl flex flex-col gap-2">
       {imageMask ? (
         <UploadedImageBackgroundCard>
           <Image
@@ -41,12 +36,12 @@ const ImageMaskUploadForm: FC<ImageMaskUploadFormProps> = ({
         </UploadedImageBackgroundCard>
       ) : (
         <>
-          <ImageMaskUploadInput onClick={uploadImageHandler} />
+          <ImageMaskUploadInput onClick={onUploadImageMask} />
           <h4 className="text-center font-semibold ">OR</h4>
           <GenerateMaskButton onClick={onGenerateMaskClick} />
         </>
       )}
-    </div>
+    </section>
   );
 };
-export default ImageMaskUploadForm;
+export default ImageMaskUploadSection;

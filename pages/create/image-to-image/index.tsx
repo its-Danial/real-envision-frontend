@@ -58,8 +58,6 @@ const ImageToImage: FC = () => {
       formData.append(key, generationParameters[key]);
     }
 
-    // const response = await axios.post(`${backendApiRoute}/image-to-image`, formData);
-    // const data = await response.data;
     const response = await generateImageToImage(formData);
     const data = await response.data;
 

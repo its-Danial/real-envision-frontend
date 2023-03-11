@@ -7,10 +7,10 @@ type ImageUploadInputProps = {
 
 const ImageUploadInput: FC<ImageUploadInputProps> = ({ onUpload }) => {
   return (
-    <label className="cursor-pointer flex flex-col w-full h-full rounded-xl border-4 border-dashed hover:bg-gray-100 hover:border-gray-300">
+    <label className="upload-image-card">
       <div className="flex flex-col w-full h-full items-center justify-center ">
         <MdCloudUpload size={40} />
-        <p className="pt-1 text-sm text-gray-400 group-hover:text-gray-600">Upload an initial Image</p>
+        <p className="pt-1 text-sm text-base-content">Upload an initial Image</p>
       </div>
       <input
         type="file"

@@ -1,13 +1,14 @@
 import { FC, useRef, useState } from "react";
-import ImageMaskUploadForm from "../../../components/section/ImageMaskUploadForm";
+import ImageMaskUploadSection from "../../../components/section/ImageMaskUploadSection";
 import ImageUploadForm from "../../../components/section/ImageUploadForm";
+import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
 import Alert from "../../../components/ui/Alert";
 import { ImageInpaintingGenerationParameters } from "../../../models/models";
 import { createImageMask } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/constants";
 
 const ImageInpainting: FC = () => {
-  const mainScrollRef = useRef<null | HTMLDivElement>(null);
+  const generationSectionScrollRef = useRef<null | HTMLDivElement>(null);
 
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const [imageMask, setImageMask] = useState<File | string | null>(null);
@@ -29,13 +30,18 @@ const ImageInpainting: FC = () => {
   const [showSetting, setShowSetting] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
-  const initialImageSubmitHandler = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const uploadImageMaskHandler = (image: File) => {
     if (!uploadedImage) {
-      alert("Upload an image");
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
       return;
     }
-    mainScrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    console.log(image);
+    setImageMask(image);
+
+    generationSectionScrollRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const generateImageMaskHandler = async () => {
@@ -57,11 +63,12 @@ const ImageInpainting: FC = () => {
 
     setImageMask(data);
     setMaskIsLoading(false);
+
+    generationSectionScrollRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const onGenerateClickHandler = async () => {
     setGeneratedImageIsLoading(true);
-
     setGeneratedImageIsLoading(false);
   };
 
@@ -72,12 +79,11 @@ const ImageInpainting: FC = () => {
     console.log(generationParameters);
   };
   return (
-    <div>
+    <main>
       {showAlert && <Alert message="Upload Initial Image first" />}
       {/* note: upload initial image area */}
       <div className="-mt-8 mx-8 h-screen flex items-center justify-center gap-4">
         <ImageUploadForm
-          onSubmit={initialImageSubmitHandler}
           uploadedImage={uploadedImage}
           setUploadedImage={setUploadedImage}
           buttonOptions={
@@ -95,14 +101,23 @@ const ImageInpainting: FC = () => {
           }
         />
         {/* Note: Upload Mask Area */}
-        <ImageMaskUploadForm
+        <ImageMaskUploadSection
           imageMask={imageMask}
-          setImageMask={setImageMask}
+          onUploadImageMask={uploadImageMaskHandler}
           onGenerateMaskClick={generateImageMaskHandler}
           maskIsLoading={maskIsLoading}
         />
       </div>
-    </div>
+      <div ref={generationSectionScrollRef} className="h-screen scroll-mt-8">
+        <TextPromptImageGenerationSection
+          generatedImages={generatedImages}
+          generationParameters={generationParameters}
+          isLoading={generatedImageIsLoading}
+          onGenerateClickHandler={onGenerateClickHandler}
+          onSettingsChangeHandler={onSettingsChangeHandler}
+        />
+      </div>
+    </main>
   );
 };
 export default ImageInpainting;

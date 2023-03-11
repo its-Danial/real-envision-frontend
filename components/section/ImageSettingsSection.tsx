@@ -25,7 +25,7 @@ const ImageSettingsSection: FC<ImageSettingsSectionProps> = ({
   onGenerateClickHandler,
 }) => {
   return (
-    <main ref={mainScrollRef} id="main-section" className="flex h-screen">
+    <main ref={mainScrollRef} className="flex h-screen">
       {/* note: Show edited Images place */}
       <div className="basis-[70%] flex justify-center items-center">
         <div className="p-5 w-full max-w-[65vw] h-[720px] bg-base-200 border border-base-300 rounded-xl flex items-center justify-center">
