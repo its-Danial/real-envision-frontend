@@ -1,5 +1,5 @@
 import { RoughNotation } from "react-rough-notation";
-import StudioCreateCard from "../../components/Card/StudioCreateCard";
+import StudioCreateCard from "../../components/card/StudioCreateCard";
 import textToImageImg from "../../public/assets/studio/models/text-to-image.svg";
 import imageToImage from "../../public/assets/studio/models/image-to-image.svg";
 import inpaintingImg from "../../public/assets/studio/models/inpainting.svg";

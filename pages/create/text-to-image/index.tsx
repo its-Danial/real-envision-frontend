@@ -3,9 +3,10 @@ import Image from "next/image";
 import { AiOutlineSetting } from "react-icons/ai";
 import RiseLoader from "react-spinners/RiseLoader";
 import { generateTextToImage } from "../../../utils/api";
-import BasicCaptionCard from "../../../components/Card/BasicCaptionCard";
-import LabelRangeInput from "../../../components/Inputs/LabelRangeInput";
-import NegativePromptInput from "../../../components/Inputs/NegativePromptInput";
+import BasicCaptionCard from "../../../components/card/BasicCaptionCard";
+import LabelRangeInput from "../../../components/inputs/LabelRangeInput";
+import NegativePromptInput from "../../../components/inputs/NegativePromptInput";
+import { generateRandomSeed } from "../../../utils/constants";
 
 const TextToImage: FC = () => {
   const [generationParameters, setGenerationParameters] = useState({
@@ -16,7 +17,7 @@ const TextToImage: FC = () => {
     guidance_scale: 8.5,
     negative_prompt: "",
     num_images_per_prompt: 1,
-    seed: Math.floor(Math.random() * 10000),
+    seed: generateRandomSeed(),
   });
 
   const [generatedImages, setGeneratedImages] = useState([]);

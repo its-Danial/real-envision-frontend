@@ -1,6 +1,6 @@
 import { FC } from "react";
-import Footer from "../Footer/Footer";
-import NavBar from "../Navbar/Navbar";
+import Footer from "../footer/Footer";
+import NavBar from "../navbar/Navbar";
 
 type MainLayoutProps = {
   children: React.ReactNode;
