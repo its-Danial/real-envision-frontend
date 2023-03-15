@@ -15,9 +15,8 @@ const TextToImage: FC = () => {
     seed: generateRandomSeed(),
   });
 
-  const [generatedImages, setGeneratedImages] = useState([]);
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [showSetting, setShowSetting] = useState(false);
 
   const onGenerateClickHandler = async () => {
     setIsLoading(true);

@@ -24,11 +24,16 @@ const ImageInpainting: FC = () => {
     seed: generateRandomSeed(),
   });
 
-  const [generatedImages, setGeneratedImages] = useState([]);
+  enum AlertMessage {
+    InitialImageMissing = "Please upload Initial Image first",
+    BothImagesMissing = "Please upload Images first",
+  }
+
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [generatedImageIsLoading, setGeneratedImageIsLoading] = useState(false);
   const [maskIsLoading, setMaskIsLoading] = useState(false);
-  const [showSetting, setShowSetting] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(AlertMessage.InitialImageMissing);
 
   const uploadImageMaskHandler = (image: File) => {
     if (!uploadedImage) {
@@ -67,20 +72,29 @@ const ImageInpainting: FC = () => {
     generationSectionScrollRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const onGenerateClickHandler = async () => {
-    setGeneratedImageIsLoading(true);
-    setGeneratedImageIsLoading(false);
-  };
-
   const onSettingsChangeHandler = (id: string, value: number | string) => {
     setGenerationParameters((prevState) => {
       return { ...prevState, [id]: value };
     });
     console.log(generationParameters);
   };
+
+  const onGenerateClickHandler = async () => {
+    if (!uploadedImage && !imageMask) {
+      setAlertMessage(AlertMessage.BothImagesMissing);
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        setAlertMessage(AlertMessage.InitialImageMissing);
+      }, 3000);
+      return;
+    }
+    setGeneratedImageIsLoading(true);
+    setGeneratedImageIsLoading(false);
+  };
   return (
     <main>
-      {showAlert && <Alert message="Upload Initial Image first" />}
+      {showAlert && <Alert message={alertMessage} />}
       {/* note: upload initial image area */}
       <div className="-mt-8 mx-8 h-screen flex items-center justify-center gap-4">
         <ImageUploadForm
@@ -108,6 +122,7 @@ const ImageInpainting: FC = () => {
           maskIsLoading={maskIsLoading}
         />
       </div>
+
       <div ref={generationSectionScrollRef} className="h-screen scroll-mt-8">
         <TextPromptImageGenerationSection
           generatedImages={generatedImages}

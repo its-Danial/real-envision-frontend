@@ -20,7 +20,7 @@ const ImageToImage: FC = () => {
     seed: generateRandomSeed(),
   });
 
-  const [generatedImages, setGeneratedImages] = useState([]);
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const initialImageSubmitHandler = async (event: React.FormEvent) => {
