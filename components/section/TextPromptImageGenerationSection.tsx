@@ -43,6 +43,7 @@ const TextPromptImageGenerationSection: FC<TextPromptImageGenerationSectionProps
             type="text"
             placeholder='Enter a text prompt e.g "Painting of a cute cat, dramatic lightning"'
             className="input input-bordered input-primary w-full"
+            spellCheck={true}
           />
           <button
             disabled={generationParameters.prompt.length === 0 || isLoading}

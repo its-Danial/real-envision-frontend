@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { FC, useRef, useState } from "react";
 import ImageSettingsSection from "../../../components/section/ImageSettingsSection";
 import ImageUploadForm from "../../../components/section/ImageUploadForm";
@@ -67,7 +68,11 @@ const ImageToImage: FC = () => {
   };
 
   return (
-    <div>
+    <>
+      <Head>
+        <title>Image to Image - RealEnvision</title>
+        <meta name="Image to Image" content="Page to generate images with Image to Image tool" />
+      </Head>
       {/* note upload image area */}
       <div className="-mt-8 h-screen flex items-center justify-center">
         <ImageUploadForm
@@ -100,7 +105,7 @@ const ImageToImage: FC = () => {
           uploadedImage={uploadedImage}
         />
       )}
-    </div>
+    </>
   );
 };
 export default ImageToImage;

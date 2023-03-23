@@ -15,3 +15,8 @@ export const createImageMask = async (formData: FormData) => {
   const response = await axiosClient.post("/create-image-mask", formData);
   return response;
 };
+
+export const generateImageInpainting = async (formData: FormData) => {
+  const response = await axiosClient.post("/image-inpainting", formData);
+  return response;
+};

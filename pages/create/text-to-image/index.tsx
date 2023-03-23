@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { FC, useState } from "react";
 import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
 import { generateTextToImage } from "../../../utils/api";
@@ -34,13 +35,19 @@ const TextToImage: FC = () => {
   };
 
   return (
-    <TextPromptImageGenerationSection
-      generatedImages={generatedImages}
-      generationParameters={generationParameters}
-      isLoading={isLoading}
-      onGenerateClickHandler={onGenerateClickHandler}
-      onSettingsChangeHandler={onSettingsChangeHandler}
-    />
+    <>
+      <Head>
+        <title>Text to Image - RealEnvision</title>
+        <meta name="Text to Image" content="Page to generate images with Text to Image tool" />
+      </Head>
+      <TextPromptImageGenerationSection
+        generatedImages={generatedImages}
+        generationParameters={generationParameters}
+        isLoading={isLoading}
+        onGenerateClickHandler={onGenerateClickHandler}
+        onSettingsChangeHandler={onSettingsChangeHandler}
+      />
+    </>
   );
 };
 export default TextToImage;

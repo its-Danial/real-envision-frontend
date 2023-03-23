@@ -1,10 +1,11 @@
+import Head from "next/head";
 import { FC, useRef, useState } from "react";
 import ImageMaskUploadSection from "../../../components/section/ImageMaskUploadSection";
 import ImageUploadForm from "../../../components/section/ImageUploadForm";
 import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
 import Alert from "../../../components/ui/Alert";
 import { ImageInpaintingGenerationParameters } from "../../../models/models";
-import { createImageMask } from "../../../utils/api";
+import { createImageMask, generateImageInpainting } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/constants";
 
 const ImageInpainting: FC = () => {
@@ -89,50 +90,71 @@ const ImageInpainting: FC = () => {
       }, 3000);
       return;
     }
-    setGeneratedImageIsLoading(true);
-    setGeneratedImageIsLoading(false);
+
+    if (uploadedImage && imageMask) {
+      // TODO: Fix for when mask is generated
+      setGeneratedImageIsLoading(true);
+      const formData = new FormData();
+      formData.append("initial_image", uploadedImage, uploadedImage.name);
+      formData.append("mask_image", imageMask, "mask_image");
+      for (const key in generationParameters) {
+        // @ts-ignore
+        formData.append(key, generationParameters[key]);
+      }
+      const response = await generateImageInpainting(formData);
+      const data = await response.data;
+      console.log(data);
+      setGeneratedImages(data);
+      setGeneratedImageIsLoading(false);
+    }
   };
   return (
-    <main>
-      {showAlert && <Alert message={alertMessage} />}
-      {/* note: upload initial image area */}
-      <div className="-mt-8 mx-8 h-screen flex items-center justify-center gap-4">
-        <ImageUploadForm
-          uploadedImage={uploadedImage}
-          setUploadedImage={setUploadedImage}
-          buttonOptions={
-            <div className="space-x-4">
-              <button
-                className="btn btn-primary btn-sm mx-auto normal-case w-44"
-                onClick={() => {
-                  setUploadedImage(null);
-                  setImageMask(null);
-                }}
-              >
-                Remove
-              </button>
-            </div>
-          }
-        />
-        {/* Note: Upload Mask Area */}
-        <ImageMaskUploadSection
-          imageMask={imageMask}
-          onUploadImageMask={uploadImageMaskHandler}
-          onGenerateMaskClick={generateImageMaskHandler}
-          maskIsLoading={maskIsLoading}
-        />
-      </div>
+    <>
+      <Head>
+        <title>Image Inpainting - RealEnvision</title>
+        <meta name="Image Inpainting" content="Page to generate images with Image inpainting tool" />
+      </Head>
+      <main>
+        {showAlert && <Alert message={alertMessage} />}
+        {/* note: upload initial image area */}
+        <div className="-mt-8 mx-8 h-screen flex items-center justify-center gap-4">
+          <ImageUploadForm
+            uploadedImage={uploadedImage}
+            setUploadedImage={setUploadedImage}
+            buttonOptions={
+              <div className="space-x-4">
+                <button
+                  className="btn btn-primary btn-sm mx-auto normal-case w-44"
+                  onClick={() => {
+                    setUploadedImage(null);
+                    setImageMask(null);
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            }
+          />
+          {/* Note: Upload Mask Area */}
+          <ImageMaskUploadSection
+            imageMask={imageMask}
+            onUploadImageMask={uploadImageMaskHandler}
+            onGenerateMaskClick={generateImageMaskHandler}
+            maskIsLoading={maskIsLoading}
+          />
+        </div>
 
-      <div ref={generationSectionScrollRef} className="h-screen scroll-mt-8">
-        <TextPromptImageGenerationSection
-          generatedImages={generatedImages}
-          generationParameters={generationParameters}
-          isLoading={generatedImageIsLoading}
-          onGenerateClickHandler={onGenerateClickHandler}
-          onSettingsChangeHandler={onSettingsChangeHandler}
-        />
-      </div>
-    </main>
+        <div ref={generationSectionScrollRef} className="h-screen scroll-mt-8">
+          <TextPromptImageGenerationSection
+            generatedImages={generatedImages}
+            generationParameters={generationParameters}
+            isLoading={generatedImageIsLoading}
+            onGenerateClickHandler={onGenerateClickHandler}
+            onSettingsChangeHandler={onSettingsChangeHandler}
+          />
+        </div>
+      </main>
+    </>
   );
 };
 export default ImageInpainting;
