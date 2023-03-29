@@ -20,3 +20,8 @@ export const generateImageInpainting = async (formData: FormData) => {
   const response = await axiosClient.post("/image-inpainting", formData);
   return response;
 };
+
+export const generateSuperResolution = async (formData: FormData) => {
+  const response = await axiosClient.post(`/super-resolution`, formData);
+  return response;
+};

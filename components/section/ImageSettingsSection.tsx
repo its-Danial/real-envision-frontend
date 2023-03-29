@@ -3,14 +3,14 @@ import Image from "next/image";
 import { BsImages } from "react-icons/bs";
 import { RiseLoader } from "react-spinners";
 import LabelRangeInput from "../inputs/LabelRangeInput";
-import { ImageToImageGenerationParameters } from "../../models/models";
+import { ImageToImageGenerationParameters, SuperResolutionGenerationParameters } from "../../models/models";
 
 type ImageSettingsSectionProps = {
   uploadedImage: File | null;
   generatedImages: string[];
   isLoading: boolean;
   mainScrollRef: MutableRefObject<HTMLDivElement | null>;
-  generationParameters: ImageToImageGenerationParameters;
+  generationParameters: ImageToImageGenerationParameters | SuperResolutionGenerationParameters;
   onSettingsChangeHandler: (id: string, value: number | string) => void;
   onGenerateClickHandler: () => void;
 };
@@ -107,17 +107,21 @@ const ImageSettingsSection: FC<ImageSettingsSectionProps> = ({
               step={1}
               onChange={onSettingsChangeHandler}
             />
-            <LabelRangeInput
-              title="Strength"
-              id="strength"
-              leftLabel="More original"
-              rightLabel="More modified"
-              value={generationParameters.strength}
-              minValue={0.0}
-              maxValue={1}
-              step={0.05}
-              onChange={onSettingsChangeHandler}
-            />
+            {/* @ts-ignore */}
+            {generationParameters.strength && (
+              <LabelRangeInput
+                title="Strength"
+                id="strength"
+                leftLabel="More original"
+                rightLabel="More modified"
+                // @ts-ignore
+                value={generationParameters.strength}
+                minValue={0.0}
+                maxValue={1}
+                step={0.05}
+                onChange={onSettingsChangeHandler}
+              />
+            )}
             <div className="space-y-2">
               <label className="font-semibold text-sm">
                 Seed <span className="text-[12px] ml-1 font-medium">(Produce different images)</span>
