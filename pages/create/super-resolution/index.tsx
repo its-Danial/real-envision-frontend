@@ -2,7 +2,7 @@ import Head from "next/head";
 import { FC, useRef, useState } from "react";
 import ImageSettingsSection from "../../../components/section/ImageSettingsSection";
 import ImageUploadForm from "../../../components/section/ImageUploadForm";
-import { SuperResolutionGenerationParameters } from "../../../models/models";
+import { SuperResolutionGenerationParameters } from "../../../types/generationParameter";
 import { generateSuperResolution } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/constants";
 

@@ -1,17 +1,23 @@
 import { FC } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import LoginButton from "../inputs/LoginButton";
 
 type NavBarProps = {};
 
 const NavBar: FC<NavBarProps> = (props) => {
+  const { data: session } = useSession();
   const router = useRouter();
 
   const navLinks = [
     { title: "Studio", path: "/create" },
-    { title: "Profile", path: "/profile" },
-    { title: "Guide", path: "/guide" },
+    { title: "Custom Model", path: "/custom-model" },
   ];
+
+  if (session) {
+    navLinks.push({ title: "Projects", path: "/projects" });
+  }
 
   return (
     <div className="navbar px-8 bg-base-100">
@@ -34,27 +40,7 @@ const NavBar: FC<NavBarProps> = (props) => {
       </div>
 
       <div className="flex-none">
-        <div className="dropdown dropdown-end">
-          <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-            <div className="w-10 rounded-full">
-              <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-            </div>
-          </label>
-          <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-            <li>
-              <a className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
-            <li>
-              <a>Settings</a>
-            </li>
-            <li>
-              <a>Logout</a>
-            </li>
-          </ul>
-        </div>
+        <LoginButton />
       </div>
     </div>
   );

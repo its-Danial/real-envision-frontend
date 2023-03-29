@@ -2,7 +2,7 @@ import Head from "next/head";
 import { FC, useRef, useState } from "react";
 import ImageSettingsSection from "../../../components/section/ImageSettingsSection";
 import ImageUploadForm from "../../../components/section/ImageUploadForm";
-import { ImageToImageGenerationParameters } from "../../../models/models";
+import { ImageToImageGenerationParameters } from "../../../types/generationParameter";
 import { generateImageToImage } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/constants";
 

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { BsImages } from "react-icons/bs";
 import { RiseLoader } from "react-spinners";
 import LabelRangeInput from "../inputs/LabelRangeInput";
-import { ImageToImageGenerationParameters, SuperResolutionGenerationParameters } from "../../models/models";
+import { ImageToImageGenerationParameters, SuperResolutionGenerationParameters } from "../../types/generationParameter";
 
 type ImageSettingsSectionProps = {
   uploadedImage: File | null;

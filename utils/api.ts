@@ -1,4 +1,4 @@
-import { TextToImageGenerationParameters } from "./../models/models";
+import { TextToImageGenerationParameters } from "../types/generationParameter";
 import axiosClient from "./axiosClient";
 
 export const generateTextToImage = async (parameters: TextToImageGenerationParameters) => {

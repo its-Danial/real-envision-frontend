@@ -4,7 +4,7 @@ import ImageMaskUploadSection from "../../../components/section/ImageMaskUploadS
 import ImageUploadForm from "../../../components/section/ImageUploadForm";
 import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
 import Alert from "../../../components/ui/Alert";
-import { ImageInpaintingGenerationParameters } from "../../../models/models";
+import { ImageInpaintingGenerationParameters } from "../../../types/generationParameter";
 import { createImageMask, generateImageInpainting } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/constants";
 

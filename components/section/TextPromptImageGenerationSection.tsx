@@ -2,7 +2,7 @@ import Image from "next/image";
 import { FC, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { RiseLoader } from "react-spinners";
-import { ImageInpaintingGenerationParameters, TextToImageGenerationParameters } from "../../models/models";
+import { ImageInpaintingGenerationParameters, TextToImageGenerationParameters } from "../../types/generationParameter";
 import BasicCaptionCard from "../card/BasicCaptionCard";
 import LabelRangeInput from "../inputs/LabelRangeInput";
 import NegativePromptInput from "../inputs/NegativePromptInput";
