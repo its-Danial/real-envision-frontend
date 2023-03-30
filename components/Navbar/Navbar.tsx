@@ -1,13 +1,23 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import LoginButton from "../inputs/LoginButton";
+import { TypeUser } from "../../types/users";
+import axios from "axios";
+import NavAuthButton from "../inputs/NavAuthButton";
 
 type NavBarProps = {};
 
 const NavBar: FC<NavBarProps> = (props) => {
   const { data: session } = useSession();
+  const [user, setUser] = useState<TypeUser>();
+
+  useEffect(() => {
+    if (session) {
+      axios.get(`/api/users/by-email/${session?.user?.email}`).then(({ data }) => setUser(data.data));
+    }
+  }, [session]);
+
   const router = useRouter();
 
   const navLinks = [
@@ -15,8 +25,8 @@ const NavBar: FC<NavBarProps> = (props) => {
     { title: "Custom Model", path: "/custom-model" },
   ];
 
-  if (session) {
-    navLinks.push({ title: "Projects", path: "/projects" });
+  if (session && user) {
+    navLinks.push({ title: "Projects", path: `/user/projects/${user._id}` });
   }
 
   return (
@@ -40,7 +50,7 @@ const NavBar: FC<NavBarProps> = (props) => {
       </div>
 
       <div className="flex-none">
-        <LoginButton />
+        <NavAuthButton userId={user?._id} />
       </div>
     </div>
   );
