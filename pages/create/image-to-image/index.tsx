@@ -2,6 +2,7 @@ import Head from "next/head";
 import { FC, useRef, useState } from "react";
 import ImageSettingsSection from "../../../components/section/ImageSettingsSection";
 import ImageUploadForm from "../../../components/section/ImageUploadForm";
+import Breadcrumbs from "../../../components/ui/Breadcrumbs";
 import { ImageToImageGenerationParameters } from "../../../types/generationParameter";
 import { generateImageToImage } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/constants";
@@ -73,8 +74,13 @@ const ImageToImage: FC = () => {
         <title>Image to Image - RealEnvision</title>
         <meta name="Image to Image" content="Page to generate images with Image to Image tool" />
       </Head>
+
+      <Breadcrumbs
+        links={[{ title: "Home", href: "/" }, { title: "Studio", href: "/create" }, { title: "Image To Image Tool" }]}
+      />
+
       {/* note upload image area */}
-      <div className="-mt-8 h-screen flex items-center justify-center">
+      <div className="h-screen flex justify-center">
         <ImageUploadForm
           onSubmit={initialImageSubmitHandler}
           uploadedImage={uploadedImage}

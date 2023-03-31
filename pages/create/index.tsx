@@ -1,19 +1,19 @@
+import Head from "next/head";
 import { RoughNotation } from "react-rough-notation";
 import StudioCreateCard from "../../components/card/StudioCreateCard";
-import textToImageImg from "../../public/assets/studio/models/text-to-image.svg";
 import imageToImage from "../../public/assets/studio/models/image-to-image.svg";
 import inpaintingImg from "../../public/assets/studio/models/inpainting.svg";
 import superResolutionImg from "../../public/assets/studio/models/super-resolution.svg";
-import Head from "next/head";
+import textToImageImg from "../../public/assets/studio/models/text-to-image.svg";
 
 const Create = () => {
   return (
-    <>
+    <main className="my-8">
       <Head>
         <title>Create - RealEnvision</title>
         <meta name="Create Page" content="Page to select image generation features of diffusion model" />
       </Head>
-      <div className="mb-8 flex flex-col items-center justify-center space-y-7">
+      <div className="flex flex-col items-center justify-center space-y-7">
         <h1 className="text-3xl font-bold">
           Pick the magic of generative{" "}
           <RoughNotation type="underline" show>
@@ -54,7 +54,7 @@ const Create = () => {
           </div>
         </div>
       </div>
-    </>
+    </main>
   );
 };
 export default Create;

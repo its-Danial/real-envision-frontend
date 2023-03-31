@@ -1,7 +1,7 @@
 import { Schema, model, models } from "mongoose";
-import { TypeUsers } from "../types/users";
+import { TypeUser } from "../types/users";
 
-const usersSchema = new Schema<TypeUsers>({
+const usersSchema = new Schema<TypeUser>({
   name: String,
   email: {
     type: String,
@@ -12,6 +12,6 @@ const usersSchema = new Schema<TypeUsers>({
   emailVerified: Boolean,
 });
 
-const Users = models.Users || model<TypeUsers>("Users", usersSchema);
+const Users = models.Users || model<TypeUser>("Users", usersSchema);
 
 export default Users;

@@ -4,6 +4,7 @@ import ImageMaskUploadSection from "../../../components/section/ImageMaskUploadS
 import ImageUploadForm from "../../../components/section/ImageUploadForm";
 import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
 import Alert from "../../../components/ui/Alert";
+import Breadcrumbs from "../../../components/ui/Breadcrumbs";
 import { ImageInpaintingGenerationParameters } from "../../../types/generationParameter";
 import { createImageMask, generateImageInpainting } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/constants";
@@ -114,34 +115,45 @@ const ImageInpainting: FC = () => {
         <title>Image Inpainting - RealEnvision</title>
         <meta name="Image Inpainting" content="Page to generate images with Image inpainting tool" />
       </Head>
-      <main>
+
+      <>
         {showAlert && <Alert message={alertMessage} />}
-        {/* note: upload initial image area */}
-        <div className="-mt-8 mx-8 h-screen flex items-center justify-center gap-4">
-          <ImageUploadForm
-            uploadedImage={uploadedImage}
-            setUploadedImage={setUploadedImage}
-            buttonOptions={
-              <div className="space-x-4">
-                <button
-                  className="btn btn-primary btn-sm mx-auto normal-case w-44"
-                  onClick={() => {
-                    setUploadedImage(null);
-                    setImageMask(null);
-                  }}
-                >
-                  Remove
-                </button>
-              </div>
-            }
+
+        <div className="h-screen">
+          <Breadcrumbs
+            links={[
+              { title: "Home", href: "/" },
+              { title: "Studio", href: "/create" },
+              { title: "Image Inpainting Tool" },
+            ]}
           />
-          {/* Note: Upload Mask Area */}
-          <ImageMaskUploadSection
-            imageMask={imageMask}
-            onUploadImageMask={uploadImageMaskHandler}
-            onGenerateMaskClick={generateImageMaskHandler}
-            maskIsLoading={maskIsLoading}
-          />
+          {/* note: upload initial image area */}
+          <div className="h-full mx-8 flex gap-4">
+            <ImageUploadForm
+              uploadedImage={uploadedImage}
+              setUploadedImage={setUploadedImage}
+              buttonOptions={
+                <div className="space-x-4">
+                  <button
+                    className="btn btn-primary btn-sm mx-auto normal-case w-44"
+                    onClick={() => {
+                      setUploadedImage(null);
+                      setImageMask(null);
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              }
+            />
+            {/* Note: Upload Mask Area */}
+            <ImageMaskUploadSection
+              imageMask={imageMask}
+              onUploadImageMask={uploadImageMaskHandler}
+              onGenerateMaskClick={generateImageMaskHandler}
+              maskIsLoading={maskIsLoading}
+            />
+          </div>
         </div>
 
         <div ref={generationSectionScrollRef} className="h-screen scroll-mt-8">
@@ -153,7 +165,7 @@ const ImageInpainting: FC = () => {
             onSettingsChangeHandler={onSettingsChangeHandler}
           />
         </div>
-      </main>
+      </>
     </>
   );
 };

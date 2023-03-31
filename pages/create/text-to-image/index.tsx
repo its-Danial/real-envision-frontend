@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { FC, useState } from "react";
 import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
+import Breadcrumbs from "../../../components/ui/Breadcrumbs";
 import { generateTextToImage } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/constants";
 
@@ -40,6 +41,11 @@ const TextToImage: FC = () => {
         <title>Text to Image - RealEnvision</title>
         <meta name="Text to Image" content="Page to generate images with Text to Image tool" />
       </Head>
+
+      <Breadcrumbs
+        links={[{ title: "Home", href: "/" }, { title: "Studio", href: "/create" }, { title: "Text To Image Tool" }]}
+      />
+
       <TextPromptImageGenerationSection
         generatedImages={generatedImages}
         generationParameters={generationParameters}
