@@ -7,7 +7,7 @@ import Alert from "../../../components/ui/Alert";
 import Breadcrumbs from "../../../components/ui/Breadcrumbs";
 import { ImageInpaintingGenerationParameters } from "../../../types/generationParameter";
 import { createImageMask, generateImageInpainting } from "../../../utils/api";
-import { generateRandomSeed } from "../../../utils/constants";
+import { generateRandomSeed } from "../../../utils/helpers";
 
 const ImageInpainting: FC = () => {
   const generationSectionScrollRef = useRef<null | HTMLDivElement>(null);

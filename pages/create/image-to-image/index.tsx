@@ -5,7 +5,7 @@ import ImageUploadForm from "../../../components/section/ImageUploadForm";
 import Breadcrumbs from "../../../components/ui/Breadcrumbs";
 import { ImageToImageGenerationParameters } from "../../../types/generationParameter";
 import { generateImageToImage } from "../../../utils/api";
-import { generateRandomSeed } from "../../../utils/constants";
+import { generateRandomSeed } from "../../../utils/helpers";
 
 const ImageToImage: FC = () => {
   const mainScrollRef = useRef<null | HTMLDivElement>(null);

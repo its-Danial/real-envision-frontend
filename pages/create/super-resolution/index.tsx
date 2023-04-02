@@ -5,7 +5,7 @@ import ImageUploadForm from "../../../components/section/ImageUploadForm";
 import Breadcrumbs from "../../../components/ui/Breadcrumbs";
 import { SuperResolutionGenerationParameters } from "../../../types/generationParameter";
 import { generateSuperResolution } from "../../../utils/api";
-import { generateRandomSeed } from "../../../utils/constants";
+import { generateRandomSeed } from "../../../utils/helpers";
 
 const SuperResolution: FC = () => {
   const mainScrollRef = useRef<null | HTMLDivElement>(null);

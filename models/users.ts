@@ -10,6 +10,11 @@ const usersSchema = new Schema<TypeUser>({
   },
   image: String,
   emailVerified: Boolean,
+  imageDownloadFormat: {
+    type: String,
+    default: "PNG",
+    required: true,
+  },
 });
 
 const Users = models.Users || model<TypeUser>("Users", usersSchema);

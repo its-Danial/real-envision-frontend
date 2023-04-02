@@ -6,4 +6,5 @@ export type TypeUser = {
   email: string;
   image: string;
   emailVerified: null;
+  imageDownloadFormat: string;
 };

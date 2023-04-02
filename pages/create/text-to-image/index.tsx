@@ -3,7 +3,7 @@ import { FC, useState } from "react";
 import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
 import Breadcrumbs from "../../../components/ui/Breadcrumbs";
 import { generateTextToImage } from "../../../utils/api";
-import { generateRandomSeed } from "../../../utils/constants";
+import { generateRandomSeed } from "../../../utils/helpers";
 
 const TextToImage: FC = () => {
   const [generationParameters, setGenerationParameters] = useState({
