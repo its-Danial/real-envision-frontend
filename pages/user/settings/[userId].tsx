@@ -4,6 +4,9 @@ import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { authOptions } from "../../api/auth/[...nextauth]";
+import LabelTextInput from "../../../components/inputs/LabelTextInput";
+import SettingsAvatar from "../../../components/inputs/SettingsAvatar";
+import SelectInput from "../../../components/inputs/SelectInput";
 
 const UserSettings: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
   const [userData, setUserData] = useState<{
@@ -25,14 +28,15 @@ const UserSettings: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
   };
 
   return (
-    <div className="h-screen flex justify-center items-center">
-      <div className="w-1/3 h-1/2 bg-base-300">
-        <div className="form-control w-full max-w-xs">
-          <label className="label">
-            <span className="label-text">What is your name?</span>
-          </label>
-          <input type="text" placeholder="Type here" className="input input-bordered input-primary w-full max-w-xs" />
-        </div>
+    <div className="min-h-screen flex justify-center items-center">
+      <div className="max-w-lg w-full p-8 grid gap-5 bg-base-300 rounded-lg shadow-lg">
+        <h1 className="text-3xl font-bold text-center">Settings</h1>
+        <SettingsAvatar />
+
+        <LabelTextInput label="Name" placeholder="Enter your new name" />
+        <LabelTextInput label="Email" placeholder="Enter your account email" />
+        <SelectInput />
+        <button className="btn btn-primary">Save</button>
       </div>
     </div>
   );
