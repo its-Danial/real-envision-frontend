@@ -1,11 +1,12 @@
 import Head from "next/head";
-import { FC, useState } from "react";
+import { useState } from "react";
 import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
 import Breadcrumbs from "../../../components/ui/Breadcrumbs";
 import { generateTextToImage } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/helpers";
+import { NextPage } from "next";
 
-const TextToImage: FC = () => {
+const TextToImagePage: NextPage = () => {
   const [generationParameters, setGenerationParameters] = useState({
     prompt: "",
     height: 512,
@@ -56,4 +57,4 @@ const TextToImage: FC = () => {
     </>
   );
 };
-export default TextToImage;
+export default TextToImagePage;

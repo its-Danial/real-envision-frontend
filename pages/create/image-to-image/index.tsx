@@ -1,13 +1,14 @@
 import Head from "next/head";
-import { FC, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ImageSettingsSection from "../../../components/section/ImageSettingsSection";
 import ImageUploadForm from "../../../components/section/ImageUploadForm";
 import Breadcrumbs from "../../../components/ui/Breadcrumbs";
 import { ImageToImageGenerationParameters } from "../../../types/generationParameter";
 import { generateImageToImage } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/helpers";
+import { NextPage } from "next";
 
-const ImageToImage: FC = () => {
+const ImageToImagePage: NextPage = () => {
   const mainScrollRef = useRef<null | HTMLDivElement>(null);
 
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
@@ -114,4 +115,4 @@ const ImageToImage: FC = () => {
     </>
   );
 };
-export default ImageToImage;
+export default ImageToImagePage;

@@ -9,7 +9,7 @@ import SettingsAvatar from "../../../components/inputs/SettingsAvatar";
 import SelectInput from "../../../components/inputs/SelectInput";
 import { TypeUser } from "../../../types/users";
 
-const UserSettings: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
+const UserSettingsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
   const [userData, setUserData] = useState<TypeUser>(user);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -73,7 +73,7 @@ const UserSettings: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
     </div>
   );
 };
-export default UserSettings;
+export default UserSettingsPage;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);

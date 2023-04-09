@@ -5,8 +5,9 @@ import imageToImage from "../../public/assets/studio/models/image-to-image.svg";
 import inpaintingImg from "../../public/assets/studio/models/inpainting.svg";
 import superResolutionImg from "../../public/assets/studio/models/super-resolution.svg";
 import textToImageImg from "../../public/assets/studio/models/text-to-image.svg";
+import { NextPage } from "next";
 
-const Create = () => {
+const CreatePage: NextPage = () => {
   return (
     <main className="my-8">
       <Head>
@@ -57,4 +58,4 @@ const Create = () => {
     </main>
   );
 };
-export default Create;
+export default CreatePage;

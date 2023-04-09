@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { FC, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ImageMaskUploadSection from "../../../components/section/ImageMaskUploadSection";
 import ImageUploadForm from "../../../components/section/ImageUploadForm";
 import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
@@ -8,8 +8,9 @@ import Breadcrumbs from "../../../components/ui/Breadcrumbs";
 import { ImageInpaintingGenerationParameters } from "../../../types/generationParameter";
 import { createImageMask, generateImageInpainting } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/helpers";
+import { NextPage } from "next";
 
-const ImageInpainting: FC = () => {
+const ImageInpaintingPage: NextPage = () => {
   const generationSectionScrollRef = useRef<null | HTMLDivElement>(null);
 
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
@@ -169,4 +170,4 @@ const ImageInpainting: FC = () => {
     </>
   );
 };
-export default ImageInpainting;
+export default ImageInpaintingPage;

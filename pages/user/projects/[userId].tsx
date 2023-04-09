@@ -1,12 +1,11 @@
-import { FC } from "react";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]";
 
-const Projects: FC = (props) => {
-  return <div>Projects</div>;
+const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = () => {
+  return <div>hello world</div>;
 };
-export default Projects;
+export default ProjectsPage;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);

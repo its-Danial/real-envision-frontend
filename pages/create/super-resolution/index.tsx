@@ -1,13 +1,14 @@
 import Head from "next/head";
-import { FC, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ImageSettingsSection from "../../../components/section/ImageSettingsSection";
 import ImageUploadForm from "../../../components/section/ImageUploadForm";
 import Breadcrumbs from "../../../components/ui/Breadcrumbs";
 import { SuperResolutionGenerationParameters } from "../../../types/generationParameter";
 import { generateSuperResolution } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/helpers";
+import { NextPage } from "next";
 
-const SuperResolution: FC = () => {
+const SuperResolutionPage: NextPage = () => {
   const mainScrollRef = useRef<null | HTMLDivElement>(null);
 
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
@@ -113,4 +114,4 @@ const SuperResolution: FC = () => {
     </>
   );
 };
-export default SuperResolution;
+export default SuperResolutionPage;
