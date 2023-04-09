@@ -21,12 +21,12 @@ const NavBar: FC<NavBarProps> = (props) => {
   const router = useRouter();
 
   const navLinks = [
-    { title: "Studio", path: "/create" },
-    { title: "Custom Model", path: "/custom-model" },
+    { title: "Studio", href: "/create", basePath: "/create" },
+    { title: "Custom Model", href: "/custom-model", basePath: "/custom-model" },
   ];
 
   if (session && user) {
-    navLinks.push({ title: "Projects", path: `/user/projects/${user._id}` });
+    navLinks.push({ title: "Projects", href: `/user/projects/${user._id}`, basePath: "/user/projects/" });
   }
 
   return (
@@ -37,10 +37,10 @@ const NavBar: FC<NavBarProps> = (props) => {
         </Link>
 
         {navLinks.map((link) => (
-          <Link key={link.title} href={link.path} legacyBehavior>
+          <Link key={link.title} href={link.href} legacyBehavior>
             <a
               className={`btn btn-sm text-base normal-case rounded-md ${
-                router.pathname.startsWith(link.path) ? "btn-active" : "btn-outline"
+                router.pathname.startsWith(link.basePath) ? "btn-active" : "btn-outline"
               }`}
             >
               {link.title}

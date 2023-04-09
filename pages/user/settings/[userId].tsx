@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -10,6 +10,8 @@ import SelectInput from "../../../components/inputs/SelectInput";
 import { TypeUser } from "../../../types/users";
 
 const UserSettingsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
+  console.log(user);
+
   const [userData, setUserData] = useState<TypeUser>(user);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -75,7 +77,7 @@ const UserSettingsPage: NextPage<InferGetServerSidePropsType<typeof getServerSid
 };
 export default UserSettingsPage;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
   if (!session) {
