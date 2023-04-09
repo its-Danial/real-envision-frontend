@@ -49,9 +49,11 @@ const NavBar: FC<NavBarProps> = (props) => {
         ))}
       </div>
 
-      <div className="flex-none">
-        <NavAuthButton userId={user?._id} />
-      </div>
+      {!router.pathname.startsWith("/auth/signin") && (
+        <div className="flex-none">
+          <NavAuthButton userId={user?._id} />
+        </div>
+      )}
     </div>
   );
 };
