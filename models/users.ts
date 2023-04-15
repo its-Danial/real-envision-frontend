@@ -1,8 +1,11 @@
 import { Schema, model, models } from "mongoose";
-import { TypeUser } from "../types/users";
+import { TypeUser } from "../types/types";
 
 const usersSchema = new Schema<TypeUser>({
-  name: String,
+  name: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
@@ -10,6 +13,11 @@ const usersSchema = new Schema<TypeUser>({
   },
   image: String,
   emailVerified: Boolean,
+  profileDescription: {
+    type: String,
+    default: "Fellow AI Enthusiast",
+    required: true,
+  },
   imageDownloadFormat: {
     type: String,
     default: "PNG",

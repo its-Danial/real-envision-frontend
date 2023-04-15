@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { getServerSession } from "next-auth";
 import ProjectsBannerSection from "../../../components/section/ProjectsBannerSection";
@@ -5,7 +6,8 @@ import ProjectsSettingsBar from "../../../components/section/ProjectsSettingsBar
 import { authOptions } from "../../api/auth/[...nextauth]";
 import ProjectPreviewCard from "../../../components/card/ProjectPreviewCard";
 import ProjectModal from "../../../components/ui/ProjectModal";
-import { useState } from "react";
+import { NextAPIClient } from "../../../utils/axiosClient";
+import { TypeUser } from "../../../types/types";
 
 const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
   const [showModal, setShowModal] = useState(false);
@@ -28,7 +30,7 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
   return (
     <div>
       <ProjectsBannerSection user={user} />
-      <ProjectsSettingsBar />
+      <ProjectsSettingsBar userId={user._id!} />
       <section className="h-full p-10 flex flex-wrap gap-10">
         <ProjectPreviewCard onClick={projectCardClickHandler} />
         <ProjectPreviewCard onClick={projectCardClickHandler} />
@@ -54,7 +56,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
       },
     };
   }
-  const { user } = session;
+
+  const response = await NextAPIClient.get(`/api/users/by-email/${session.user?.email}`);
+  const user: TypeUser = await response.data.data;
 
   return {
     props: { user },

@@ -70,7 +70,7 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, generationParameter
             <div className="px-5 py-4 flex flex-wrap items-center justify-between">
               <div className="w-full grid grid-cols-4 gap-5">
                 <Param label="Tool" value="Text to Image" style="col-start-1 col-span-2" />
-                <Param label="Tool" value="Text to Image" style="col-start-3 col-span-2" />
+                <Param label="Model" value="runwayml/stable-diffusion-v1-5" style="col-start-3 col-span-2" />
                 <Param label="Prompt" value="camping tents on a beach with high waves" style="col-start-1 col-end-5" />
                 <Param
                   label="Negative Prompt"

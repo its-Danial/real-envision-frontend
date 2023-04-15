@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Users from "../../../models/users";
-import { TypeUser } from "../../../types/users";
+import { TypeUser } from "../../../types/types";
 import connectMongoDB from "../../../utils/connectMongoDB";
 
 type Data = {

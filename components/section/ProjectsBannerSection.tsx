@@ -1,8 +1,9 @@
 import { FC } from "react";
 import Banner from "../ui/Banner";
+import { TypeUser } from "../../types/types";
 
 type ProjectsBannerSectionProps = {
-  user: { name: string; email: string; image: string };
+  user: TypeUser;
 };
 
 const ProjectsBannerSection: FC<ProjectsBannerSectionProps> = ({ user }) => {
@@ -19,7 +20,7 @@ const ProjectsBannerSection: FC<ProjectsBannerSectionProps> = ({ user }) => {
             <div className="flex flex-col justify-start text-primary-content">
               <h3 className="text-2xl mb-[5px] font-semibold">{user.name}</h3>
               <h4 className="text-base mb-[3px] font-normal">{user.email}</h4>
-              <span className="text-sm font-normal">Fellow AI Enthusiast</span>
+              <span className="text-sm font-normal">{user.profileDescription}</span>
             </div>
           </div>
         </div>

@@ -1,9 +1,13 @@
+import { Types } from "mongoose";
+import Link from "next/link";
 import { FC } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 
-type ProjectsSettingsBarProps = {};
+type ProjectsSettingsBarProps = {
+  userId: Types.ObjectId;
+};
 
-const ProjectsSettingsBar: FC<ProjectsSettingsBarProps> = (props) => {
+const ProjectsSettingsBar: FC<ProjectsSettingsBarProps> = ({ userId }) => {
   return (
     <section className="flex px-10 pb-1 border-b border-base-300">
       <div className="flex-1 gap-4">
@@ -12,9 +16,11 @@ const ProjectsSettingsBar: FC<ProjectsSettingsBarProps> = (props) => {
           <span className="font-normal text-sm text-primary">4</span>
         </div>
       </div>
-      <button className="btn btn-primary btn-sm gap-3 normal-case">
-        <AiOutlineSetting size={20} /> Settings
-      </button>
+      <Link href={`/user/settings/${userId}`} legacyBehavior>
+        <a className="btn btn-primary btn-sm gap-3 normal-case">
+          <AiOutlineSetting size={20} /> Settings
+        </a>
+      </Link>
     </section>
   );
 };

@@ -1,23 +1,18 @@
 import axios from "axios";
+import { useState } from "react";
 import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { authOptions } from "../../api/auth/[...nextauth]";
 import LabelTextInput from "../../../components/inputs/LabelTextInput";
-import SettingsAvatar from "../../../components/inputs/SettingsAvatar";
 import SelectInput from "../../../components/inputs/SelectInput";
-import { TypeUser } from "../../../types/users";
+import SettingsAvatar from "../../../components/inputs/SettingsAvatar";
+import { TypeUser } from "../../../types/types";
+import { NextAPIClient } from "../../../utils/axiosClient";
+import { authOptions } from "../../api/auth/[...nextauth]";
 
 const UserSettingsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
-  console.log(user);
-
   const [userData, setUserData] = useState<TypeUser>(user);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    axios.get(`/api/users/by-email/${user?.email}`).then(({ data }) => setUserData(data.data));
-  }, [user]);
 
   const router = useRouter();
 
@@ -26,6 +21,7 @@ const UserSettingsPage: NextPage<InferGetServerSidePropsType<typeof getServerSid
     const { data } = await axios.put(`/api/users/${userData._id}`, {
       name: userData.name,
       image: userData.image,
+      profileDescription: userData.profileDescription,
       imageDownloadFormat: userData.imageDownloadFormat,
     });
     setUserData(data.data);
@@ -60,6 +56,13 @@ const UserSettingsPage: NextPage<InferGetServerSidePropsType<typeof getServerSid
           disable
           onChange={valueChangeHandler.bind(this, "email")}
         />
+        <LabelTextInput
+          label="Profile Description"
+          placeholder="Enter your profile description"
+          value={userData.profileDescription ? userData.profileDescription : ""}
+          disable={userData.profileDescription ? false : true}
+          onChange={valueChangeHandler.bind(this, "profileDescription")}
+        />
         <SelectInput
           value={userData.imageDownloadFormat}
           onChange={valueChangeHandler.bind(this, "imageDownloadFormat")}
@@ -88,7 +91,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
       },
     };
   }
-  const { user } = session;
+
+  const response = await NextAPIClient.get(`/api/users/by-email/${session.user?.email}`);
+  const user = await response.data.data;
 
   return {
     props: { user },

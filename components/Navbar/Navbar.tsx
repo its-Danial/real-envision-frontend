@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { TypeUser } from "../../types/users";
+import { TypeUser } from "../../types/types";
 import axios from "axios";
 import NavAuthButton from "../inputs/NavAuthButton";
 

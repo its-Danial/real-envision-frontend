@@ -1,8 +1,10 @@
-import { backendApiRoute } from "./helpers";
+import { fastAPIbackendRoute, nextAPIRoute } from "./helpers";
 import axios from "axios";
 
-const axiosClient = axios.create({
-  baseURL: backendApiRoute,
+export const FastAPIClient = axios.create({
+  baseURL: fastAPIbackendRoute,
 });
 
-export default axiosClient;
+export const NextAPIClient = axios.create({
+  baseURL: nextAPIRoute,
+});
