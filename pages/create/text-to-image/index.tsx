@@ -2,11 +2,16 @@ import Head from "next/head";
 import { useState } from "react";
 import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
 import Breadcrumbs from "../../../components/ui/Breadcrumbs";
-import { generateTextToImage } from "../../../utils/api";
+import { addUserProject, generateTextToImage } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/helpers";
-import { NextPage } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../api/auth/[...nextauth]";
+import { NextAPIClient } from "../../../utils/axiosClient";
+import { TypeUser } from "../../../types/types";
+import { Types } from "mongoose";
 
-const TextToImagePage: NextPage = () => {
+const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId }) => {
   const [generationParameters, setGenerationParameters] = useState({
     prompt: "",
     height: 512,
@@ -25,15 +30,24 @@ const TextToImagePage: NextPage = () => {
     setIsLoading(true);
     const result = await generateTextToImage(generationParameters);
     setGeneratedImages(result.data);
-    console.log(generatedImages);
     setIsLoading(false);
+
+    if (userId) {
+      const response = await addUserProject(userId, {
+        tool: "Text to image",
+        model: "runwayml/stable-diffusion-v1-5",
+        images: result.data,
+        generationParameters: generationParameters,
+        timeStamp: new Date(),
+      });
+      console.log(response.data);
+    }
   };
 
   const onSettingsChangeHandler = (id: string, value: number | string) => {
     setGenerationParameters((prevState) => {
       return { ...prevState, [id]: value };
     });
-    console.log(generationParameters);
   };
 
   return (
@@ -58,3 +72,23 @@ const TextToImagePage: NextPage = () => {
   );
 };
 export default TextToImagePage;
+
+export const getServerSideProps: GetServerSideProps<{ userId?: Types.ObjectId }> = async (
+  ctx: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+
+  if (!session) {
+    return {
+      props: {},
+    };
+  }
+
+  const response = await NextAPIClient.get(`/api/users/by-email/${session.user?.email}`);
+  const user: TypeUser = (await response.data.data) as TypeUser;
+  const userId = user._id;
+
+  return {
+    props: { userId },
+  };
+};

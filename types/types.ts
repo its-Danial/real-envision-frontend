@@ -26,6 +26,7 @@ export type TypeProject = {
     | ImageInpaintingGenerationParameters
     | ImageToImageGenerationParameters
     | SuperResolutionGenerationParameters;
+  timeStamp: Date;
 };
 
 export type TypeProjects = {

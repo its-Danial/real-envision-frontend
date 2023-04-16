@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { getServerSession } from "next-auth";
 import ProjectsBannerSection from "../../../components/section/ProjectsBannerSection";
@@ -7,24 +7,19 @@ import { authOptions } from "../../api/auth/[...nextauth]";
 import ProjectPreviewCard from "../../../components/card/ProjectPreviewCard";
 import ProjectModal from "../../../components/ui/ProjectModal";
 import { NextAPIClient } from "../../../utils/axiosClient";
-import { TypeUser } from "../../../types/types";
+import { TypeProject, TypeProjects, TypeUser } from "../../../types/types";
+import { generateRandomSeed } from "../../../utils/helpers";
+import { Types } from "mongoose";
 
-const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
+const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user, projects }) => {
   const [showModal, setShowModal] = useState(false);
+  const [openedProject, setOpenedProject] = useState<TypeProject | undefined>(undefined);
 
-  const projectCardClickHandler = () => {
+  const projectCardClickHandler = (projectId: Types.ObjectId | undefined) => {
+    const selectedProject = projects.projects.find((project) => project._id === projectId);
+    setOpenedProject(selectedProject);
+
     setShowModal(true);
-  };
-
-  const TEST_GENERATION_PARAMETERS = {
-    prompt: "Hello world",
-    height: 512,
-    width: 512,
-    num_inference_steps: 50,
-    guidance_scale: 8.5,
-    negative_prompt: "Hello world",
-    num_images_per_prompt: 1,
-    seed: 1000,
   };
 
   return (
@@ -32,20 +27,21 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
       <ProjectsBannerSection user={user} />
       <ProjectsSettingsBar userId={user._id!} />
       <section className="h-full p-10 flex flex-wrap gap-10">
-        <ProjectPreviewCard onClick={projectCardClickHandler} />
-        <ProjectPreviewCard onClick={projectCardClickHandler} />
-        <ProjectPreviewCard onClick={projectCardClickHandler} />
-        <ProjectPreviewCard onClick={projectCardClickHandler} />
+        {projects.projects.map((project) => (
+          <Fragment key={generateRandomSeed()}>
+            <ProjectPreviewCard onClick={projectCardClickHandler.bind(this, project._id)} project={project} />
+          </Fragment>
+        ))}
       </section>
-      {showModal && (
-        <ProjectModal onCloseClick={() => setShowModal(false)} generationParameters={TEST_GENERATION_PARAMETERS} />
-      )}
+      {showModal && openedProject && <ProjectModal onCloseClick={() => setShowModal(false)} project={openedProject} />}
     </div>
   );
 };
 export default ProjectsPage;
 
-export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps<{ user: TypeUser; projects: TypeProjects }> = async (
+  ctx: GetServerSidePropsContext
+) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
   if (!session) {
@@ -57,10 +53,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
     };
   }
 
-  const response = await NextAPIClient.get(`/api/users/by-email/${session.user?.email}`);
-  const user: TypeUser = await response.data.data;
+  const userDataResponse = await NextAPIClient.get(`/api/users/by-email/${session.user?.email}`);
+  const user: TypeUser = await userDataResponse.data.data;
+
+  const userProjectResponse = await NextAPIClient.get(`/api/users/projects/${user._id}`);
+  const projects: TypeProjects = await userProjectResponse.data.data;
 
   return {
-    props: { user },
+    props: { user, projects },
   };
 };

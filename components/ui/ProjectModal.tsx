@@ -1,23 +1,19 @@
 import { FC } from "react";
-import { RiImageEditFill } from "react-icons/ri";
 import { BiCustomize, BiDownload, BiTrash } from "react-icons/bi";
 import { ImMagicWand } from "react-icons/im";
-import { TextToImageGenerationParameters } from "../../types/generationParameter";
-import { ImageInpaintingGenerationParameters } from "../../types/generationParameter";
-import { ImageToImageGenerationParameters } from "../../types/generationParameter";
-import { SuperResolutionGenerationParameters } from "../../types/generationParameter";
+import { RiImageEditFill } from "react-icons/ri";
+import { TypeProject } from "../../types/types";
 import Param from "./Param";
+import { generateRandomSeed } from "../../utils/helpers";
 
 type ProjectModalProps = {
   onCloseClick: () => void;
-  generationParameters:
-    | TextToImageGenerationParameters
-    | ImageInpaintingGenerationParameters
-    | ImageToImageGenerationParameters
-    | SuperResolutionGenerationParameters;
+  project: TypeProject;
 };
 
-const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, generationParameters }) => {
+const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, project }) => {
+  const { generationParameters } = project;
+
   return (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -43,10 +39,14 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, generationParameter
             </div>
             {/*body (images)*/}
             <div className="relative px-5 py-3 flex-auto border-t border-solid border-base-300">
-              <img
-                src="https://www.rd.com/wp-content/uploads/2020/07/GettyImages-685031953-e1594928609604.jpg"
-                alt=""
-              />
+              {project.images.map((imageString) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={generateRandomSeed()}
+                  src={`data:image/png;base64,${imageString}`}
+                  alt={generationParameters.prompt + " image"}
+                />
+              ))}
             </div>
             {/*Delete and download*/}
             <div className="px-5 pb-3 flex items-center justify-between border-b border-solid border-base-300">
@@ -69,18 +69,28 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, generationParameter
             {/* Todo: map all the parameter settings */}
             <div className="px-5 py-4 flex flex-wrap items-center justify-between">
               <div className="w-full grid grid-cols-4 gap-5">
-                <Param label="Tool" value="Text to Image" style="col-start-1 col-span-2" />
-                <Param label="Model" value="runwayml/stable-diffusion-v1-5" style="col-start-3 col-span-2" />
-                <Param label="Prompt" value="camping tents on a beach with high waves" style="col-start-1 col-end-5" />
+                <Param label="Tool" value={project.tool} style="col-start-1 col-span-2" />
+                <Param label="Model" value={project.model} style="col-start-3 col-span-2" />
+                <Param label="Prompt" value={project.generationParameters.prompt} style="col-start-1 col-end-5" />
                 <Param
                   label="Negative Prompt"
-                  value="out of frame, duplicate, watermark, signature, text"
+                  value={
+                    project.generationParameters.negative_prompt.length === 0
+                      ? "Not specified"
+                      : project.generationParameters.negative_prompt
+                  }
                   style="col-start-1 col-end-5"
                 />
-                <Param label="Resolution" value="512x512" />
-                <Param label="Guidance" value="12" />
-                <Param label="Number of Images" value="1" />
-                <Param label="Seed" value="10849" />
+                {/* @ts-ignore */}
+                {generationParameters.width && (
+                  // @ts-ignore
+                  <Param label="Resolution" value={`${generationParameters.width}x${generationParameters.height}`} />
+                )}
+                {/* @ts-ignore */}
+                {generationParameters.strength && <Param label="Strength" value={generationParameters.strength} />}
+                <Param label="Guidance" value={generationParameters.guidance_scale} />
+                <Param label="Number of Images" value={generationParameters.num_images_per_prompt} />
+                <Param label="Seed" value={generationParameters.seed} />
               </div>
             </div>
           </div>

@@ -80,7 +80,7 @@ const UserSettingsPage: NextPage<InferGetServerSidePropsType<typeof getServerSid
 };
 export default UserSettingsPage;
 
-export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps<{ user: TypeUser }> = async (ctx: GetServerSidePropsContext) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
   if (!session) {
@@ -93,7 +93,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
   }
 
   const response = await NextAPIClient.get(`/api/users/by-email/${session.user?.email}`);
-  const user = await response.data.data;
+  const user: TypeUser = await response.data.data;
 
   return {
     props: { user },

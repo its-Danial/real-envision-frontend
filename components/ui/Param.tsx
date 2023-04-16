@@ -2,7 +2,7 @@ import { FC } from "react";
 
 type ParamProps = {
   label: string;
-  value: string;
+  value: string | number;
   style?: string;
 };
 

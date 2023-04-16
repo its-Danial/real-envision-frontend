@@ -1,5 +1,5 @@
 import { Schema, model, models } from "mongoose";
-import { TypeProject, TypeProjects } from "../types/types";
+import { TypeProjects } from "../types/types";
 
 const projectsSchema = new Schema<TypeProjects>({
   userId: { type: Schema.Types.ObjectId, unique: true },
@@ -9,6 +9,7 @@ const projectsSchema = new Schema<TypeProjects>({
       model: String,
       images: [String],
       generationParameters: Schema.Types.Mixed,
+      timeStamp: Date,
     },
   ],
 });

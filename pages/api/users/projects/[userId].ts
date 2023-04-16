@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Projects from "../../../../models/project";
-import { TypeProject, TypeProjects } from "../../../../types/types";
+import { TypeProjects } from "../../../../types/types";
 import connectMongoDB from "../../../../utils/connectMongoDB";
 
 type Data = {
@@ -93,3 +93,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       break;
   }
 }
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "8mb",
+      responseLimit: "8mb",
+    },
+  },
+};
