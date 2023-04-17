@@ -10,9 +10,16 @@ import { NextAPIClient } from "../../../utils/axiosClient";
 import { TypeProject, TypeProjects, TypeUser } from "../../../types/types";
 import { generateRandomSeed } from "../../../utils/helpers";
 import { Types } from "mongoose";
+import BasicCaptionCard from "../../../components/card/BasicCaptionCard";
+import { deleteUserProject } from "../../../utils/api";
 
-const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user, projects }) => {
+const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({
+  user,
+  projects: preFetchedProjects,
+}) => {
+  const [projects, setProjects] = useState(preFetchedProjects);
   const [showModal, setShowModal] = useState(false);
+  const [deleteInProgress, setDeleteInProgress] = useState(false);
   const [openedProject, setOpenedProject] = useState<TypeProject | undefined>(undefined);
 
   const projectCardClickHandler = (projectId: Types.ObjectId | undefined) => {
@@ -22,18 +29,45 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
     setShowModal(true);
   };
 
+  const deleteProjectClickHandler = async () => {
+    setDeleteInProgress(true);
+    const response = await deleteUserProject(user._id!, openedProject?._id!);
+    const updatedProjects = await response.data.data;
+    setProjects(updatedProjects);
+    setDeleteInProgress(false);
+    setShowModal(false);
+  };
+
   return (
     <div>
       <ProjectsBannerSection user={user} />
       <ProjectsSettingsBar userId={user._id!} />
-      <section className="h-full p-10 flex flex-wrap gap-10">
-        {projects.projects.map((project) => (
-          <Fragment key={generateRandomSeed()}>
-            <ProjectPreviewCard onClick={projectCardClickHandler.bind(this, project._id)} project={project} />
-          </Fragment>
-        ))}
+      <section className={`${deleteInProgress ? "animate-pulse cursor-not-allowed" : ""} h-full p-10`}>
+        <div className={`${deleteInProgress ? "pointer-events-none" : ""} w-full h-full flex flex-wrap gap-10`}>
+          {projects.projects.length === 0 ? (
+            <div className="flex justify-center">
+              <BasicCaptionCard title="No projects" text="Navigate to the studio page to create new projects" />
+            </div>
+          ) : (
+            projects.projects.map((project) => (
+              <Fragment key={generateRandomSeed()}>
+                <ProjectPreviewCard onClick={projectCardClickHandler.bind(this, project._id)} project={project} />
+              </Fragment>
+            ))
+          )}
+        </div>
       </section>
-      {showModal && openedProject && <ProjectModal onCloseClick={() => setShowModal(false)} project={openedProject} />}
+      {showModal && openedProject && (
+        <ProjectModal
+          onCloseClick={() => {
+            setShowModal(false);
+            setOpenedProject(undefined);
+          }}
+          project={openedProject}
+          deleteInProgress={deleteInProgress}
+          onDeleteClick={deleteProjectClickHandler}
+        />
+      )}
     </div>
   );
 };

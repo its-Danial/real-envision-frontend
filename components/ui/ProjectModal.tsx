@@ -1,41 +1,49 @@
+import Link from "next/link";
 import { FC } from "react";
 import { BiCustomize, BiDownload, BiTrash } from "react-icons/bi";
 import { ImMagicWand } from "react-icons/im";
 import { RiImageEditFill } from "react-icons/ri";
 import { TypeProject } from "../../types/types";
-import Param from "./Param";
 import { generateRandomSeed } from "../../utils/helpers";
-import Link from "next/link";
+import Param from "./Param";
 
 type ProjectModalProps = {
   onCloseClick: () => void;
+  onDeleteClick: () => void;
   project: TypeProject;
+  deleteInProgress: boolean;
 };
 
-const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, project }) => {
+const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, onDeleteClick, project, deleteInProgress }) => {
   const { generationParameters } = project;
 
   return (
     <>
-      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-        <div className="relative w-auto my-auto py-3 mx-auto max-w-xl">
+      <div
+        className={`${
+          deleteInProgress ? "animate-pulse pointer-events-none" : ""
+        } justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none`}
+      >
+        <div
+          className={`${deleteInProgress ? "cursor-not-allowed" : ""} relative w-auto my-auto py-3 mx-auto max-w-xl`}
+        >
           {/*content*/}
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-base-100 outline-none focus:outline-none">
             {/*header*/}
             <div className="flex items-start justify-between px-5 py-4 rounded-t">
               <div className="space-x-3">
                 <Link href={{ pathname: "/create/text-to-image", query: { projectId: String(project._id) } }}>
-                  <button className="btn btn-sm btn-primary normal-case gap-2">
+                  <button disabled={deleteInProgress} className="btn btn-sm btn-primary normal-case gap-2">
                     <BiCustomize /> Reuse params
                   </button>
                 </Link>
                 <Link href={{ pathname: "" }}>
-                  <button className="btn btn-sm btn-primary normal-case gap-2">
+                  <button disabled={deleteInProgress} className="btn btn-sm btn-primary normal-case gap-2">
                     <RiImageEditFill /> Use as initial Image
                   </button>
                 </Link>
 
-                <button className="btn btn-sm btn-primary normal-case gap-2">
+                <button disabled={deleteInProgress} className="btn btn-sm btn-primary normal-case gap-2">
                   <ImMagicWand /> Enhance
                 </button>
               </div>
@@ -57,6 +65,7 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, project }) => {
             {/*Delete and download*/}
             <div className="px-5 pb-3 flex items-center justify-between border-b border-solid border-base-300">
               <button
+                disabled={deleteInProgress}
                 className="btn btn-sm ease-linear transition-all duration-150"
                 type="button"
                 onClick={onCloseClick}
@@ -64,9 +73,10 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, project }) => {
                 <BiDownload size={16} />
               </button>
               <button
+                disabled={deleteInProgress}
                 className="btn btn-sm ease-linear transition-all duration-150"
                 type="button"
-                onClick={onCloseClick}
+                onClick={onDeleteClick}
               >
                 <BiTrash size={16} />
               </button>
@@ -99,6 +109,11 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, project }) => {
                 <Param label="Seed" value={generationParameters.seed} />
               </div>
             </div>
+            {/* {isLoading && (
+              <div className="absolute m-auto  top-1/2 bottom-1/2">
+                <RiseLoader color="#1E293B" size={30} />
+              </div>
+            )} */}
           </div>
         </div>
       </div>

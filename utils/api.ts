@@ -44,7 +44,7 @@ export const addUserProject = async (userId: Types.ObjectId, projectData: TypePr
   return response;
 };
 
-export const deleteUserProject = async (userId: Types.ObjectId, projectId: string) => {
+export const deleteUserProject = async (userId: Types.ObjectId, projectId: Types.ObjectId) => {
   const response = await axios.delete(`/api/users/projects/${userId}/${projectId}`);
   return response;
 };

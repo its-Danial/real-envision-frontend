@@ -4,11 +4,13 @@ import NextNProgress from "nextjs-progressbar";
 
 import MainLayout from "../components/layout/MainLayout";
 import "../styles/globals.css";
+import useThemeDetector from "../hooks/useThemeDetector";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+  const isDarkTheme = useThemeDetector();
   return (
     <>
-      <NextNProgress color="#0d0d0d" height={6} />
+      <NextNProgress color={isDarkTheme ? "#ff79c6" : "#0d0d0d"} height={6} />
       <SessionProvider session={session}>
         <MainLayout>
           <Component {...pageProps} />
