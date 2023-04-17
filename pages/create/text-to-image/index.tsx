@@ -1,29 +1,38 @@
+import { Types } from "mongoose";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
+import { getServerSession } from "next-auth";
 import Head from "next/head";
 import { useState } from "react";
 import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
 import Breadcrumbs from "../../../components/ui/Breadcrumbs";
+import { TypeProject, TypeUser } from "../../../types/types";
 import { addUserProject, generateTextToImage } from "../../../utils/api";
-import { generateRandomSeed } from "../../../utils/helpers";
-import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../api/auth/[...nextauth]";
 import { NextAPIClient } from "../../../utils/axiosClient";
-import { TypeUser } from "../../../types/types";
-import { Types } from "mongoose";
+import { generateRandomSeed } from "../../../utils/helpers";
+import { authOptions } from "../../api/auth/[...nextauth]";
+import { TextToImageGenerationParameters } from "../../../types/generationParameter";
 
-const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId }) => {
-  const [generationParameters, setGenerationParameters] = useState({
-    prompt: "",
-    height: 512,
-    width: 512,
-    num_inference_steps: 50,
-    guidance_scale: 8.5,
-    negative_prompt: "",
-    num_images_per_prompt: 1,
-    seed: generateRandomSeed(),
-  });
+const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId, userProject }) => {
+  console.log(userProject);
 
-  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+  const preLoadedParam = userProject
+    ? userProject.generationParameters
+    : {
+        prompt: "",
+        height: 512,
+        width: 512,
+        num_inference_steps: 50,
+        guidance_scale: 8.5,
+        negative_prompt: "",
+        num_images_per_prompt: 1,
+        seed: generateRandomSeed(),
+      };
+
+  const preLoadedImages = userProject ? userProject.images : [];
+
+  const [generationParameters, setGenerationParameters] = useState(preLoadedParam as TextToImageGenerationParameters);
+
+  const [generatedImages, setGeneratedImages] = useState<string[]>(preLoadedImages);
   const [isLoading, setIsLoading] = useState(false);
 
   const onGenerateClickHandler = async () => {
@@ -73,7 +82,7 @@ const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSide
 };
 export default TextToImagePage;
 
-export const getServerSideProps: GetServerSideProps<{ userId?: Types.ObjectId }> = async (
+export const getServerSideProps: GetServerSideProps<{ userId?: Types.ObjectId; userProject?: TypeProject }> = async (
   ctx: GetServerSidePropsContext
 ) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
@@ -84,11 +93,24 @@ export const getServerSideProps: GetServerSideProps<{ userId?: Types.ObjectId }>
     };
   }
 
-  const response = await NextAPIClient.get(`/api/users/by-email/${session.user?.email}`);
-  const user: TypeUser = (await response.data.data) as TypeUser;
+  // Get user if authenticated
+  const userDataResponse = await NextAPIClient.get(`/api/users/by-email/${session.user?.email}`);
+  const user: TypeUser = await userDataResponse.data.data;
   const userId = user._id;
 
+  // Get project if loaded from /user/project/[userId] page
+  const { projectId } = ctx.query;
+
+  if (!projectId) {
+    return {
+      props: { userId },
+    };
+  }
+
+  const userProjectResponse = await NextAPIClient.get(`/api/users/projects/${userId}/${projectId}`);
+  const userProject = await userProjectResponse.data.data;
+
   return {
-    props: { userId },
+    props: { userId, userProject },
   };
 };

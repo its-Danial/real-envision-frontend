@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import Projects from "../../../../models/project";
-import { TypeProjects } from "../../../../types/types";
-import connectMongoDB from "../../../../utils/connectMongoDB";
+import { TypeProjects } from "../../../../../types/types";
+import connectMongoDB from "../../../../../utils/connectMongoDB";
+import Projects from "../../../../../models/project";
 
 type Data = {
   success: boolean;
@@ -57,32 +57,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         const updatedDoc = await userProjects.save();
 
         res.status(200).json({ success: true, data: updatedDoc });
-      } catch (error) {
-        res.status(400).json({ success: false, message: error });
-      }
-      break;
-
-    case "DELETE" /* Delete a project by its ID */:
-      try {
-        const userProjects = await Projects.findOneAndUpdate(
-          {
-            userId: userId,
-          },
-          {
-            $pull: {
-              projects: {
-                _id: req.body.projectId,
-              },
-            },
-          },
-          { new: true }
-        );
-
-        if (!userProjects) {
-          return res.status(400).json({ success: false, message: "No projects by that userId" });
-        }
-
-        res.status(200).json({ success: true, data: userProjects });
       } catch (error) {
         res.status(400).json({ success: false, message: error });
       }

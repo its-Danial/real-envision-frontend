@@ -5,6 +5,7 @@ import { RiImageEditFill } from "react-icons/ri";
 import { TypeProject } from "../../types/types";
 import Param from "./Param";
 import { generateRandomSeed } from "../../utils/helpers";
+import Link from "next/link";
 
 type ProjectModalProps = {
   onCloseClick: () => void;
@@ -23,12 +24,17 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, project }) => {
             {/*header*/}
             <div className="flex items-start justify-between px-5 py-4 rounded-t">
               <div className="space-x-3">
-                <button className="btn btn-sm btn-primary normal-case gap-2">
-                  <RiImageEditFill /> Use as initial Image
-                </button>
-                <button className="btn btn-sm btn-primary normal-case gap-2">
-                  <BiCustomize /> Reuse params
-                </button>
+                <Link href={{ pathname: "/create/text-to-image", query: { projectId: String(project._id) } }}>
+                  <button className="btn btn-sm btn-primary normal-case gap-2">
+                    <BiCustomize /> Reuse params
+                  </button>
+                </Link>
+                <Link href={{ pathname: "" }}>
+                  <button className="btn btn-sm btn-primary normal-case gap-2">
+                    <RiImageEditFill /> Use as initial Image
+                  </button>
+                </Link>
+
                 <button className="btn btn-sm btn-primary normal-case gap-2">
                   <ImMagicWand /> Enhance
                 </button>

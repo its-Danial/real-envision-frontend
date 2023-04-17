@@ -35,12 +35,16 @@ export const getUserProjects = async (userId: Types.ObjectId) => {
   const response = await axios.get(`/api/users/projects/${userId}`);
   return response;
 };
+export const getUserProject = async (userId: Types.ObjectId, projectId: Types.ObjectId) => {
+  const response = await axios.get(`/api/users/projects/${userId}/${projectId}`);
+  return response;
+};
 export const addUserProject = async (userId: Types.ObjectId, projectData: TypeProject) => {
   const response = await axios.put(`/api/users/projects/${userId}`, projectData);
   return response;
 };
 
 export const deleteUserProject = async (userId: Types.ObjectId, projectId: string) => {
-  const response = await axios.delete(`/api/users/projects/${userId}`, { data: { projectId } });
+  const response = await axios.delete(`/api/users/projects/${userId}/${projectId}`);
   return response;
 };
