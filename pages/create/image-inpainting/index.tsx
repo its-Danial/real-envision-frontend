@@ -123,7 +123,7 @@ const ImageInpaintingPage: NextPage = () => {
       </Head>
 
       <>
-        {alert.show && <Alert message={alert.message} type="warning" />}
+        {alert.show && <Alert message={alert.message} type="info" />}
 
         <div className="h-screen">
           <Breadcrumbs
