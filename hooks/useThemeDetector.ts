@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 
 const useThemeDetector = () => {
-  const getCurrentTheme = () => window.matchMedia("(prefers-color-scheme: dark)").matches;
+  // const getCurrentTheme = () => window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  let tempIsDarkTheme = false;
-  if (typeof window !== "undefined") {
-    tempIsDarkTheme = getCurrentTheme();
-  }
-  const [isDarkTheme, setIsDarkTheme] = useState(tempIsDarkTheme);
+  // let tempIsDarkTheme = false;
+  // if (typeof window !== "undefined") {
+  //   tempIsDarkTheme = getCurrentTheme();
+  // }
+
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+
+  useEffect(() => {
+    setIsDarkTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+  }, []);
+
   const mqListener = (e: any) => {
     setIsDarkTheme(e.matches);
   };

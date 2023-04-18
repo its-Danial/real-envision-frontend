@@ -13,8 +13,6 @@ import { authOptions } from "../../api/auth/[...nextauth]";
 import { TextToImageGenerationParameters } from "../../../types/generationParameter";
 
 const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId, userProject }) => {
-  console.log(userProject);
-
   const preLoadedParam = userProject
     ? userProject.generationParameters
     : {
@@ -29,7 +27,6 @@ const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSide
       };
 
   const preLoadedImages = userProject ? userProject.images : [];
-
   const [generationParameters, setGenerationParameters] = useState(preLoadedParam as TextToImageGenerationParameters);
 
   const [generatedImages, setGeneratedImages] = useState<string[]>(preLoadedImages);

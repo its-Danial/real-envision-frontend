@@ -35,14 +35,17 @@ const ImageInpaintingPage: NextPage = () => {
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [generatedImageIsLoading, setGeneratedImageIsLoading] = useState(false);
   const [maskIsLoading, setMaskIsLoading] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState(AlertMessage.InitialImageMissing);
+  const [alert, setAlert] = useState({ show: false, message: AlertMessage.InitialImageMissing });
 
   const uploadImageMaskHandler = (image: File) => {
     if (!uploadedImage) {
-      setShowAlert(true);
+      setAlert((prevState) => {
+        return { ...prevState, show: true };
+      });
       setTimeout(() => {
-        setShowAlert(false);
+        setAlert((prevState) => {
+          return { ...prevState, show: false };
+        });
       }, 3000);
       return;
     }
@@ -54,9 +57,13 @@ const ImageInpaintingPage: NextPage = () => {
 
   const generateImageMaskHandler = async () => {
     if (!uploadedImage) {
-      setShowAlert(true);
+      setAlert((prevState) => {
+        return { ...prevState, show: true };
+      });
       setTimeout(() => {
-        setShowAlert(false);
+        setAlert((prevState) => {
+          return { ...prevState, show: false };
+        });
       }, 3000);
       return;
     }
@@ -84,11 +91,9 @@ const ImageInpaintingPage: NextPage = () => {
 
   const onGenerateClickHandler = async () => {
     if (!uploadedImage && !imageMask) {
-      setAlertMessage(AlertMessage.BothImagesMissing);
-      setShowAlert(true);
+      setAlert({ show: true, message: AlertMessage.BothImagesMissing });
       setTimeout(() => {
-        setShowAlert(false);
-        setAlertMessage(AlertMessage.InitialImageMissing);
+        setAlert({ show: false, message: AlertMessage.InitialImageMissing });
       }, 3000);
       return;
     }
@@ -118,7 +123,7 @@ const ImageInpaintingPage: NextPage = () => {
       </Head>
 
       <>
-        {showAlert && <Alert message={alertMessage} />}
+        {alert.show && <Alert message={alert.message} type="warning" />}
 
         <div className="h-screen">
           <Breadcrumbs
