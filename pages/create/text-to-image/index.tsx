@@ -11,6 +11,7 @@ import { NextAPIClient } from "../../../utils/axiosClient";
 import { generateRandomSeed } from "../../../utils/helpers";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import { TextToImageGenerationParameters } from "../../../types/generationParameter";
+import Alert from "../../../components/ui/Alert";
 
 const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId, userProject }) => {
   const preLoadedParam = userProject
@@ -28,9 +29,13 @@ const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSide
 
   const preLoadedImages = userProject ? userProject.images : [];
   const [generationParameters, setGenerationParameters] = useState(preLoadedParam as TextToImageGenerationParameters);
-
   const [generatedImages, setGeneratedImages] = useState<string[]>(preLoadedImages);
   const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState<{
+    show: boolean;
+    message: string;
+    type: "info" | "success" | "warning" | "error";
+  }>({ show: false, message: "", type: "info" });
 
   const onGenerateClickHandler = async () => {
     setIsLoading(true);
@@ -39,6 +44,7 @@ const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSide
     setIsLoading(false);
 
     if (userId) {
+      setAlert({ show: true, message: "Saving project data...", type: "info" });
       const response = await addUserProject(userId, {
         tool: "Text to image",
         model: "runwayml/stable-diffusion-v1-5",
@@ -46,6 +52,10 @@ const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSide
         generationParameters: generationParameters,
         timeStamp: new Date(),
       });
+      setAlert({ show: true, message: "Saved the project successfully!", type: "success" });
+      setTimeout(() => {
+        setAlert({ show: false, message: "", type: "info" });
+      }, 3000);
       console.log(response.data);
     }
   };
@@ -62,6 +72,8 @@ const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSide
         <title>Text to Image - RealEnvision</title>
         <meta name="Text to Image" content="Page to generate images with Text to Image tool" />
       </Head>
+
+      {alert.show && <Alert message={alert.message} type={alert.type} />}
 
       <Breadcrumbs
         links={[{ title: "Home", href: "/" }, { title: "Studio", href: "/create" }, { title: "Text To Image Tool" }]}

@@ -1,9 +1,9 @@
-import { Dispatch, FC, SetStateAction } from "react";
 import Image from "next/image";
-import ImageMaskUploadInput from "../inputs/ImageMaskUploadInput";
-import GenerateMaskButton from "../inputs/GenerateMaskButton";
+import { FC } from "react";
 import UploadedImageBackgroundCard from "../card/UploadedImageBackgroundCard";
-import { RiseLoader } from "react-spinners";
+import GenerateMaskButton from "../inputs/GenerateMaskButton";
+import ImageMaskUploadInput from "../inputs/ImageMaskUploadInput";
+import LoadingIndicator from "../ui/LoadingIndicator";
 
 type ImageMaskUploadFormProps = {
   imageMask: File | string | null;
@@ -32,7 +32,7 @@ const ImageMaskUploadSection: FC<ImageMaskUploadFormProps> = ({
         </UploadedImageBackgroundCard>
       ) : maskIsLoading ? (
         <UploadedImageBackgroundCard>
-          <RiseLoader color="#1E293B" size={30} className="m-auto" />
+          <LoadingIndicator size={30} className="m-auto" />
         </UploadedImageBackgroundCard>
       ) : (
         <>

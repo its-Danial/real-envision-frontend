@@ -24,7 +24,7 @@ const Alert: FC<AlertProps> = memo(({ message, type }) => {
     }
   };
   return (
-    <div className="fixed top-2 w-full flex justify-center items-center">
+    <div className="fixed z-50 top-2 w-full flex justify-center items-center">
       <div className={`mx-8 alert shadow-lg ${getAlertStyle()?.at(0)}`}>
         <div>
           <svg

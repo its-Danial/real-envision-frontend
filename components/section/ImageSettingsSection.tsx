@@ -1,9 +1,9 @@
-import { FC, MutableRefObject } from "react";
 import Image from "next/image";
+import { FC, MutableRefObject } from "react";
 import { BsImages } from "react-icons/bs";
-import { RiseLoader } from "react-spinners";
-import LabelRangeInput from "../inputs/LabelRangeInput";
 import { ImageToImageGenerationParameters, SuperResolutionGenerationParameters } from "../../types/generationParameter";
+import LabelRangeInput from "../inputs/LabelRangeInput";
+import LoadingIndicator from "../ui/LoadingIndicator";
 
 type ImageSettingsSectionProps = {
   uploadedImage: File | null;
@@ -47,7 +47,7 @@ const ImageSettingsSection: FC<ImageSettingsSectionProps> = ({
 
           {uploadedImage && isLoading && (
             <div className="flex flex-col items-center justify-center">
-              <RiseLoader color="#1E293B" size={30} className="m-auto" />
+              <LoadingIndicator size={30} className="m-auto" />
             </div>
           )}
 

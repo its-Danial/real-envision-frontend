@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { FC, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
-import { RiseLoader } from "react-spinners";
 import { ImageInpaintingGenerationParameters, TextToImageGenerationParameters } from "../../types/generationParameter";
 import BasicCaptionCard from "../card/BasicCaptionCard";
 import LabelRangeInput from "../inputs/LabelRangeInput";
 import NegativePromptInput from "../inputs/NegativePromptInput";
+import LoadingIndicator from "../ui/LoadingIndicator";
 
 type TextPromptImageGenerationSectionProps = {
   generationParameters: TextToImageGenerationParameters | ImageInpaintingGenerationParameters;
@@ -147,7 +147,7 @@ const TextPromptImageGenerationSection: FC<TextPromptImageGenerationSectionProps
       </div>
       {/* Note: Output */}
       <div className="p-8 flex min-h-[350px]">
-        {isLoading && <RiseLoader color="#1E293B" size={30} className="m-auto" />}
+        {isLoading && <LoadingIndicator size={30} className="m-auto" />}
         {!isLoading && generatedImages.length != 0 && (
           <div className="mx-auto grid grid-cols-2 gap-5">
             {generatedImages.map((image) => (
