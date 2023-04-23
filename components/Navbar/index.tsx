@@ -6,9 +6,7 @@ import { TypeUser } from "../../types/types";
 import axios from "axios";
 import NavAuthButton from "../inputs/NavAuthButton";
 
-type NavBarProps = {};
-
-const NavBar: FC<NavBarProps> = (props) => {
+const NavBar: FC = () => {
   const { data: session } = useSession();
   const [user, setUser] = useState<TypeUser>();
 
