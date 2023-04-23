@@ -2,7 +2,7 @@ import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import NextNProgress from "nextjs-progressbar";
 
-import MainLayout from "../components/layout/MainLayout";
+import MainLayout from "../components/Layout/MainLayout";
 import "../styles/globals.css";
 import useThemeDetector from "../hooks/useThemeDetector";
 
