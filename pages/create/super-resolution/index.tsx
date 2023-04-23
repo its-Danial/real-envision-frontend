@@ -1,8 +1,8 @@
 import Head from "next/head";
 import { useRef, useState } from "react";
-import ImageSettingsSection from "../../../components/section/ImageSettingsSection";
-import ImageUploadForm from "../../../components/section/ImageUploadForm";
-import Breadcrumbs from "../../../components/ui/Breadcrumbs";
+import ImageSettingsSection from "../../../components/Section/ImageSettingsSection";
+import ImageUploadForm from "../../../components/Section/ImageUploadForm";
+import Breadcrumbs from "../../../components/UI/Breadcrumbs";
 import { SuperResolutionGenerationParameters } from "../../../types/generationParameter";
 import { generateSuperResolution } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/helpers";

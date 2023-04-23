@@ -3,8 +3,8 @@ import { FC, Fragment, MutableRefObject } from "react";
 import { BsImages } from "react-icons/bs";
 import { ImageToImageGenerationParameters, SuperResolutionGenerationParameters } from "../../types/generationParameter";
 import LabelRangeInput from "../inputs/LabelRangeInput";
-import LoadingIndicator from "../ui/LoadingIndicator";
-import ImageDownloadContainer from "../ui/ImageDownloadContainer";
+import LoadingIndicator from "../UI/LoadingIndicator";
+import ImageDownloadContainer from "../UI/ImageDownloadContainer";
 
 type ImageSettingsSectionProps = {
   uploadedImage: File | null;

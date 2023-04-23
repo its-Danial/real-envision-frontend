@@ -3,15 +3,15 @@ import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsT
 import { getServerSession } from "next-auth";
 import Head from "next/head";
 import { useState } from "react";
-import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
-import Breadcrumbs from "../../../components/ui/Breadcrumbs";
+import TextPromptImageGenerationSection from "../../../components/Section/TextPromptImageGenerationSection";
+import Breadcrumbs from "../../../components/UI/Breadcrumbs";
 import { TypeProject, TypeUser } from "../../../types/types";
 import { addUserProject, generateTextToImage } from "../../../utils/api";
 import { NextAPIClient } from "../../../utils/axiosClient";
 import { generateRandomSeed, instanceOfTextToImageGenParams, reshapeGenParams } from "../../../utils/helpers";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import { TextToImageGenerationParameters } from "../../../types/generationParameter";
-import Alert from "../../../components/ui/Alert";
+import Alert from "../../../components/UI/Alert";
 
 const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId, userProject }) => {
   const defaultParams = {

@@ -1,16 +1,16 @@
 import { Fragment, useState } from "react";
 import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { getServerSession } from "next-auth";
-import ProjectsBannerSection from "../../../components/section/ProjectsBannerSection";
-import ProjectsSettingsBar from "../../../components/section/ProjectsSettingsBar";
+import ProjectsBannerSection from "../../../components/Section/ProjectsBannerSection";
+import ProjectsSettingsBar from "../../../components/Section/ProjectsSettingsBar";
 import { authOptions } from "../../api/auth/[...nextauth]";
-import ProjectPreviewCard from "../../../components/card/ProjectPreviewCard";
-import ProjectModal from "../../../components/ui/ProjectModal";
+import ProjectPreviewCard from "../../../components/Card/ProjectPreviewCard";
+import ProjectModal from "../../../components/UI/ProjectModal";
 import { NextAPIClient } from "../../../utils/axiosClient";
 import { TypeProject, TypeProjects, TypeUser } from "../../../types/types";
 import { generateRandomSeed } from "../../../utils/helpers";
 import { Types } from "mongoose";
-import BasicCaptionCard from "../../../components/card/BasicCaptionCard";
+import BasicCaptionCard from "../../../components/Card/BasicCaptionCard";
 import { deleteUserProject } from "../../../utils/api";
 
 const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({

@@ -4,7 +4,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { TypeUser } from "../../types/types";
 import axios from "axios";
-import NavAvatar from "../inputs/NavAvatar";
+import NavAvatar from "../Inputs/NavAvatar";
 
 const NavBar: FC = () => {
   const { data: session } = useSession();

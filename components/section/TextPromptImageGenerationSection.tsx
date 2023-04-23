@@ -1,11 +1,11 @@
 import { FC, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { ImageInpaintingGenerationParameters, TextToImageGenerationParameters } from "../../types/generationParameter";
-import BasicCaptionCard from "../card/BasicCaptionCard";
+import BasicCaptionCard from "../Card/BasicCaptionCard";
 import LabelRangeInput from "../inputs/LabelRangeInput";
 import NegativePromptInput from "../inputs/NegativePromptInput";
-import LoadingIndicator from "../ui/LoadingIndicator";
-import ImageDownloadContainer from "../ui/ImageDownloadContainer";
+import LoadingIndicator from "../UI/LoadingIndicator";
+import ImageDownloadContainer from "../UI/ImageDownloadContainer";
 
 type TextPromptImageGenerationSectionProps = {
   generationParameters: TextToImageGenerationParameters | ImageInpaintingGenerationParameters;

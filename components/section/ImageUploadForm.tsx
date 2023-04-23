@@ -1,7 +1,7 @@
 import { Dispatch, FC, SetStateAction } from "react";
 import Image from "next/image";
-import ImageUploadInput from "../inputs/ImageUploadInput";
-import UploadedImageBackgroundCard from "../card/UploadedImageBackgroundCard";
+import ImageUploadInput from "../Inputs/ImageUploadInput";
+import UploadedImageBackgroundCard from "../Card/UploadedImageBackgroundCard";
 
 type ImageUploadFormProps = {
   uploadedImage: File | null;

@@ -3,10 +3,10 @@ import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsT
 import { getServerSession } from "next-auth";
 import Head from "next/head";
 import { useRef, useState } from "react";
-import ImageSettingsSection from "../../../components/section/ImageSettingsSection";
-import ImageUploadForm from "../../../components/section/ImageUploadForm";
-import Alert from "../../../components/ui/Alert";
-import Breadcrumbs from "../../../components/ui/Breadcrumbs";
+import ImageSettingsSection from "../../../components/Section/ImageSettingsSection";
+import ImageUploadForm from "../../../components/Section/ImageUploadForm";
+import Alert from "../../../components/UI/Alert";
+import Breadcrumbs from "../../../components/UI/Breadcrumbs";
 import { ImageToImageGenerationParameters } from "../../../types/generationParameter";
 import { TypeProject, TypeUser } from "../../../types/types";
 import { addUserProject, generateImageToImage } from "../../../utils/api";

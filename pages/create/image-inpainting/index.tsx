@@ -1,10 +1,10 @@
 import Head from "next/head";
 import { useRef, useState } from "react";
-import ImageMaskUploadSection from "../../../components/section/ImageMaskUploadSection";
-import ImageUploadForm from "../../../components/section/ImageUploadForm";
-import TextPromptImageGenerationSection from "../../../components/section/TextPromptImageGenerationSection";
-import Alert from "../../../components/ui/Alert";
-import Breadcrumbs from "../../../components/ui/Breadcrumbs";
+import ImageMaskUploadSection from "../../../components/Section/ImageMaskUploadSection";
+import ImageUploadForm from "../../../components/Section/ImageUploadForm";
+import TextPromptImageGenerationSection from "../../../components/Section/TextPromptImageGenerationSection";
+import Alert from "../../../components/UI/Alert";
+import Breadcrumbs from "../../../components/UI/Breadcrumbs";
 import { ImageInpaintingGenerationParameters } from "../../../types/generationParameter";
 import { createImageMask, generateImageInpainting } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/helpers";

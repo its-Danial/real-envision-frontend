@@ -1,5 +1,5 @@
 import { FC } from "react";
-import Banner from "../ui/Banner";
+import Banner from "../UI/Banner";
 import { TypeUser } from "../../types/types";
 
 type ProjectsBannerSectionProps = {

@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { RoughNotation } from "react-rough-notation";
-import StudioCreateCard from "../../components/card/StudioCreateCard";
+import StudioCreateCard from "../../components/Card/StudioCreateCard";
 import imageToImage from "../../public/assets/studio/models/image-to-image.svg";
 import inpaintingImg from "../../public/assets/studio/models/inpainting.svg";
 import superResolutionImg from "../../public/assets/studio/models/super-resolution.svg";
