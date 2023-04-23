@@ -1,10 +1,10 @@
 import { FC, useEffect, useState } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { TypeUser } from "../../types/types";
 import axios from "axios";
-import NavAuthButton from "../inputs/NavAuthButton";
+import NavAvatar from "../inputs/NavAvatar";
 
 const NavBar: FC = () => {
   const { data: session } = useSession();
@@ -27,6 +27,17 @@ const NavBar: FC = () => {
     navLinks.push({ title: "Projects", href: `/user/projects/${user._id}`, basePath: "/user/projects/" });
   }
 
+  const renderNavButtons = () => {
+    if (session) {
+      return <NavAvatar image={session.user?.image!} userId={user?._id} />;
+    }
+    return (
+      <button className="btn btn-sm text-base normal-case rounded-md" onClick={() => signIn()}>
+        Sign in
+      </button>
+    );
+  };
+
   return (
     <div className="navbar px-8 bg-base-100">
       <div className="flex-1 space-x-4">
@@ -47,11 +58,7 @@ const NavBar: FC = () => {
         ))}
       </div>
 
-      {!router.pathname.startsWith("/auth/signin") && (
-        <div className="flex-none">
-          <NavAuthButton userId={user?._id} />
-        </div>
-      )}
+      {!router.pathname.startsWith("/auth/signin") && <div className="flex-none">{renderNavButtons()}</div>}
     </div>
   );
 };
