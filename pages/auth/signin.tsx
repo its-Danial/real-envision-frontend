@@ -2,7 +2,7 @@ import type { GetServerSidePropsContext, InferGetServerSidePropsType, NextPage }
 import { getProviders, signIn } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
-import AuthProviderButton from "../../components/inputs/AuthProviderButton";
+import AuthProviderButton from "../../components/Inputs/AuthProviderButton";
 import { Fragment } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";

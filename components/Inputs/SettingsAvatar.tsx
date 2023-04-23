@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { RiUpload2Line } from "react-icons/ri";
-import { convertImageToBase64 } from "../../utils/helpers";
 
 type SettingsAvatarProps = {
   image: string;

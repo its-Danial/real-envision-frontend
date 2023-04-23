@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { FC } from "react";
 import UploadedImageBackgroundCard from "../Card/UploadedImageBackgroundCard";
-import GenerateMaskButton from "../inputs/GenerateMaskButton";
-import ImageMaskUploadInput from "../inputs/ImageMaskUploadInput";
+import GenerateMaskButton from "../Inputs/GenerateMaskButton";
+import ImageMaskUploadInput from "../Inputs/ImageMaskUploadInput";
 import LoadingIndicator from "../UI/LoadingIndicator";
 
 type ImageMaskUploadFormProps = {

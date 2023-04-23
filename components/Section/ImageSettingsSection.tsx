@@ -2,7 +2,7 @@
 import { FC, Fragment, MutableRefObject } from "react";
 import { BsImages } from "react-icons/bs";
 import { ImageToImageGenerationParameters, SuperResolutionGenerationParameters } from "../../types/generationParameter";
-import LabelRangeInput from "../inputs/LabelRangeInput";
+import LabelRangeInput from "../Inputs/LabelRangeInput";
 import LoadingIndicator from "../UI/LoadingIndicator";
 import ImageDownloadContainer from "../UI/ImageDownloadContainer";
 

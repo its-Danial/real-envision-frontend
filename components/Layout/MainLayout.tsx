@@ -1,5 +1,4 @@
 import { FC } from "react";
-
 import NavBar from "../Navbar";
 import Link from "next/link";
 import { BsGithub, BsLinkedin } from "react-icons/bs";

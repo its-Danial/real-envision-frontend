@@ -2,8 +2,8 @@ import { FC, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { ImageInpaintingGenerationParameters, TextToImageGenerationParameters } from "../../types/generationParameter";
 import BasicCaptionCard from "../Card/BasicCaptionCard";
-import LabelRangeInput from "../inputs/LabelRangeInput";
-import NegativePromptInput from "../inputs/NegativePromptInput";
+import LabelRangeInput from "../Inputs/LabelRangeInput";
+import NegativePromptInput from "../Inputs/NegativePromptInput";
 import LoadingIndicator from "../UI/LoadingIndicator";
 import ImageDownloadContainer from "../UI/ImageDownloadContainer";
 
