@@ -8,24 +8,28 @@ import Breadcrumbs from "../../../components/ui/Breadcrumbs";
 import { TypeProject, TypeUser } from "../../../types/types";
 import { addUserProject, generateTextToImage } from "../../../utils/api";
 import { NextAPIClient } from "../../../utils/axiosClient";
-import { generateRandomSeed } from "../../../utils/helpers";
+import { generateRandomSeed, instanceOfTextToImageGenParams, reshapeGenParams } from "../../../utils/helpers";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import { TextToImageGenerationParameters } from "../../../types/generationParameter";
 import Alert from "../../../components/ui/Alert";
 
 const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId, userProject }) => {
+  const defaultParams = {
+    prompt: "",
+    height: 512,
+    width: 512,
+    num_inference_steps: 50,
+    guidance_scale: 8.5,
+    negative_prompt: "",
+    num_images_per_prompt: 1,
+    seed: generateRandomSeed(),
+  };
+
   const preLoadedParam = userProject
-    ? userProject.generationParameters
-    : {
-        prompt: "",
-        height: 512,
-        width: 512,
-        num_inference_steps: 50,
-        guidance_scale: 8.5,
-        negative_prompt: "",
-        num_images_per_prompt: 1,
-        seed: generateRandomSeed(),
-      };
+    ? instanceOfTextToImageGenParams(userProject.generationParameters)
+      ? userProject.generationParameters
+      : reshapeGenParams(userProject.generationParameters, "text-to-image")
+    : defaultParams;
 
   const preLoadedImages = userProject ? userProject.images : [];
   const [generationParameters, setGenerationParameters] = useState(preLoadedParam as TextToImageGenerationParameters);
@@ -44,19 +48,27 @@ const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSide
     setIsLoading(false);
 
     if (userId) {
-      setAlert({ show: true, message: "Saving project data...", type: "info" });
-      const response = await addUserProject(userId, {
-        tool: "Text to image",
-        model: "runwayml/stable-diffusion-v1-5",
-        images: result.data,
-        generationParameters: generationParameters,
-        timeStamp: new Date(),
-      });
-      setAlert({ show: true, message: "Saved the project successfully!", type: "success" });
-      setTimeout(() => {
-        setAlert({ show: false, message: "", type: "info" });
-      }, 3000);
-      console.log(response.data);
+      try {
+        setAlert({ show: true, message: "Saving project data...", type: "info" });
+        const response = await addUserProject(userId, {
+          tool: "Text to image",
+          model: "runwayml/stable-diffusion-v1-5",
+          images: result.data,
+          generationParameters: generationParameters,
+          timeStamp: new Date(),
+        });
+        setAlert({ show: true, message: "Saved the project successfully!", type: "success" });
+        setTimeout(() => {
+          setAlert({ show: false, message: "", type: "info" });
+        }, 3000);
+        console.log(response);
+      } catch (error) {
+        setAlert({ show: true, message: "An error occurred while saving image, please try again", type: "error" });
+        setTimeout(() => {
+          setAlert({ show: false, message: "", type: "info" });
+        }, 3000);
+        console.log(error);
+      }
     }
   };
 

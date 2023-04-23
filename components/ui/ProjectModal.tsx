@@ -37,7 +37,7 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, onDeleteClick, proj
                     <BiCustomize /> Reuse params
                   </button>
                 </Link>
-                <Link href={{ pathname: "" }}>
+                <Link href={{ pathname: "/create/image-to-image", query: { projectId: String(project._id) } }}>
                   <button disabled={deleteInProgress} className="btn btn-sm btn-primary normal-case gap-2">
                     <RiImageEditFill /> Use as initial Image
                   </button>

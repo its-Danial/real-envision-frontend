@@ -61,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           return res.status(400).json({ success: false, message: "No projects by that userId" });
         }
 
-        res.status(200).json({ success: true, data: userProjects });
+        res.status(200).json({ success: true });
       } catch (error) {
         res.status(400).json({ success: false, message: error });
       }
@@ -76,8 +76,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: "8mb",
-      responseLimit: "8mb",
+      sizeLimit: "20mb",
+      responseLimit: "20mb",
     },
   },
 };

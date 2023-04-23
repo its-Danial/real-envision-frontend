@@ -1,3 +1,10 @@
+import {
+  ImageInpaintingGenerationParameters,
+  ImageToImageGenerationParameters,
+  SuperResolutionGenerationParameters,
+  TextToImageGenerationParameters,
+} from "../types/generationParameter";
+
 export const fastAPIbackendRoute = "http://127.0.0.1:8000";
 export const nextAPIRoute = "http://localhost:3000";
 
@@ -26,4 +33,70 @@ export function dateDiffInDays(a: Date, b: Date) {
   const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+}
+
+export function dataURLtoFile(byteString: string, filename: string) {
+  const dataUrl = `data:text/plain;base64,${byteString}`;
+
+  let arr = dataUrl.split(","),
+    // @ts-ignore
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], filename, { type: mime });
+}
+
+export function reshapeGenParams(
+  params:
+    | TextToImageGenerationParameters
+    | ImageInpaintingGenerationParameters
+    | ImageToImageGenerationParameters
+    | SuperResolutionGenerationParameters,
+  targetType: string
+) {
+  const baseParams = {
+    prompt: params.prompt,
+    num_inference_steps: params.num_inference_steps,
+    guidance_scale: params.guidance_scale,
+    negative_prompt: params.negative_prompt,
+    num_images_per_prompt: params.num_images_per_prompt,
+    seed: params.seed,
+  };
+
+  switch (targetType) {
+    case "text-to-image":
+      return { ...baseParams, height: 512, width: 512 };
+    case "image-to-image":
+      return {
+        ...baseParams,
+        strength: 0.8,
+      };
+    case "image-inpainting":
+      return { ...baseParams, height: 512, width: 512 };
+    case "super-resolution":
+      return baseParams;
+    default:
+      break;
+  }
+}
+
+export function instanceOfTextToImageGenParams(object: any): object is TextToImageGenerationParameters {
+  return "height" in object && "width" in object;
+}
+export function instanceOfImageToImageGenParams(object: any): object is ImageToImageGenerationParameters {
+  return "strength" in object && !("height" in object && "width" in object);
+}
+
+export function instanceOfImageInpaintingGenParams(object: any): object is ImageInpaintingGenerationParameters {
+  return "height" in object && "width" in object;
+}
+
+export function instanceOfSuperResolutionGenParams(object: any): object is SuperResolutionGenerationParameters {
+  return !("height" in object && "width" in object) || !("strength" in object);
 }

@@ -1,9 +1,10 @@
-import Image from "next/image";
-import { FC, MutableRefObject } from "react";
+/* eslint-disable @next/next/no-img-element */
+import { FC, Fragment, MutableRefObject } from "react";
 import { BsImages } from "react-icons/bs";
 import { ImageToImageGenerationParameters, SuperResolutionGenerationParameters } from "../../types/generationParameter";
 import LabelRangeInput from "../inputs/LabelRangeInput";
 import LoadingIndicator from "../ui/LoadingIndicator";
+import ImageDownloadContainer from "../ui/ImageDownloadContainer";
 
 type ImageSettingsSectionProps = {
   uploadedImage: File | null;
@@ -30,12 +31,10 @@ const ImageSettingsSection: FC<ImageSettingsSectionProps> = ({
       <div className="basis-[70%] flex justify-center items-center">
         <div className="p-5 w-full max-w-[65vw] h-[720px] bg-base-200 border border-base-300 rounded-xl flex items-center justify-center">
           {uploadedImage && generatedImages.length === 0 && !isLoading && (
-            <Image
-              width={400}
-              height={400}
+            <img
               src={URL.createObjectURL(uploadedImage)}
               alt="uploaded Initial Image"
-              className="object-contain h-full w-full"
+              className="object-contain h-full w-full rounded-lg"
             />
           )}
           {!uploadedImage && generatedImages.length === 0 && (
@@ -52,17 +51,14 @@ const ImageSettingsSection: FC<ImageSettingsSectionProps> = ({
           )}
 
           {uploadedImage && generatedImages.length !== 0 && !isLoading && (
-            <div className="mx-auto h-full w-full flex flex-wrap gap-5">
+            <div className="h-full w-full overflow-auto grid grid-cols-2 gap-4">
               {generatedImages.map((image) => (
-                <div key={Math.random()} className="">
-                  <Image
-                    src={`data:image/png;base64,${image}`}
-                    alt="generated image"
-                    width={512}
-                    height={512}
-                    className="object-contain h-full w-full"
-                  />
-                </div>
+                <ImageDownloadContainer
+                  key={Math.random()}
+                  style={`m-auto ${generatedImages.length === 1 ? "col-span-2" : ""}`}
+                >
+                  <img src={`data:image/png;base64,${image}`} alt="generated image" className={`rounded-lg `} />
+                </ImageDownloadContainer>
               ))}
             </div>
           )}

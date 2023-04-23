@@ -12,7 +12,6 @@ type ImageUploadFormProps = {
 
 const ImageUploadForm: FC<ImageUploadFormProps> = ({ uploadedImage, setUploadedImage, onSubmit, buttonOptions }) => {
   const uploadImageHandler = (image: File) => {
-    console.log(image);
     setUploadedImage(image);
   };
 
@@ -25,7 +24,7 @@ const ImageUploadForm: FC<ImageUploadFormProps> = ({ uploadedImage, setUploadedI
             height={350}
             src={URL.createObjectURL(uploadedImage)}
             alt="uploaded Initial Image"
-            className="object-contain h-[80%] w-[80%]"
+            className="object-contain h-[80%] w-[80%] rounded-lg"
           />
           {buttonOptions}
         </UploadedImageBackgroundCard>

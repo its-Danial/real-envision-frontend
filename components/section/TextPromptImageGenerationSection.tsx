@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { FC, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { ImageInpaintingGenerationParameters, TextToImageGenerationParameters } from "../../types/generationParameter";
@@ -6,6 +5,7 @@ import BasicCaptionCard from "../card/BasicCaptionCard";
 import LabelRangeInput from "../inputs/LabelRangeInput";
 import NegativePromptInput from "../inputs/NegativePromptInput";
 import LoadingIndicator from "../ui/LoadingIndicator";
+import ImageDownloadContainer from "../ui/ImageDownloadContainer";
 
 type TextPromptImageGenerationSectionProps = {
   generationParameters: TextToImageGenerationParameters | ImageInpaintingGenerationParameters;
@@ -149,16 +149,19 @@ const TextPromptImageGenerationSection: FC<TextPromptImageGenerationSectionProps
       <div className="p-8 flex min-h-[350px]">
         {isLoading && <LoadingIndicator size={30} className="m-auto" />}
         {!isLoading && generatedImages.length != 0 && (
-          <div className="mx-auto grid grid-cols-2 gap-5">
-            {generatedImages.map((image) => (
-              <Image
+          <div className="h-full w-full overflow-auto grid grid-cols-4 gap-4">
+            {generatedImages.map((image, index) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <ImageDownloadContainer
                 key={Math.random()}
-                src={`data:image/png;base64,${image}`}
-                alt="generated image"
-                width={512}
-                height={512}
-                className="w-[512px] h-[512px]"
-              />
+                style={`rounded-lg m-auto ${generatedImages.length === 1 ? "col-span-4" : "col-span-2"}`}
+              >
+                <img
+                  src={`data:image/png;base64,${image}`}
+                  alt={generationParameters.prompt + ` image_${index}`}
+                  className={`rounded-lg m-auto`}
+                />
+              </ImageDownloadContainer>
             ))}
           </div>
         )}

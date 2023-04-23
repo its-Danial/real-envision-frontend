@@ -12,10 +12,9 @@ export type TextToImageGenerationParameters = BaseGenerationParameters & {
   width: number;
 };
 
-export type ImageInpaintingGenerationParameters = TextToImageGenerationParameters;
-
 export type ImageToImageGenerationParameters = BaseGenerationParameters & {
   strength: number;
 };
+export type ImageInpaintingGenerationParameters = TextToImageGenerationParameters;
 
 export type SuperResolutionGenerationParameters = BaseGenerationParameters;
