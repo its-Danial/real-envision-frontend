@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]";
@@ -14,17 +14,22 @@ import ProjectsBannerSection from "../../../components/Section/ProjectsBannerSec
 import ProjectsSettingsBar from "../../../components/Section/ProjectsSettingsBar";
 import Head from "next/head";
 
-const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({
-  user,
-  projects: preFetchedProjects,
-}) => {
-  const [projects, setProjects] = useState(preFetchedProjects);
+const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
+  const [projects, setProjects] = useState<TypeProjects>();
+
+  useEffect(() => {
+    axios.get(`/api/users/projects/${user._id}`).then(({ data }) => {
+      setProjects(data.data);
+      console.log(data.data);
+    });
+  }, [user._id]);
+
   const [showModal, setShowModal] = useState(false);
   const [deleteInProgress, setDeleteInProgress] = useState(false);
   const [openedProject, setOpenedProject] = useState<TypeProject | undefined>(undefined);
 
   const projectCardClickHandler = (projectId: Types.ObjectId | undefined) => {
-    const selectedProject = projects.projects.find((project) => project._id === projectId);
+    const selectedProject = projects?.projects?.find((project) => project._id === projectId);
     setOpenedProject(selectedProject);
 
     setShowModal(true);
@@ -49,12 +54,12 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
       <ProjectsSettingsBar userId={user._id!} />
       <section className={`${deleteInProgress ? "animate-pulse cursor-not-allowed" : ""} h-full p-10`}>
         <div className={`${deleteInProgress ? "pointer-events-none" : ""} w-full h-full flex flex-wrap gap-10`}>
-          {projects.projects.length === 0 ? (
+          {projects?.projects?.length === 0 ? (
             <div className="flex justify-center">
               <BasicCaptionCard title="No projects" text="Navigate to the studio page to create new projects" />
             </div>
           ) : (
-            projects.projects.map((project) => (
+            projects?.projects?.map((project) => (
               <Fragment key={generateRandomSeed()}>
                 <ProjectPreviewCard onClick={projectCardClickHandler.bind(this, project._id)} project={project} />
               </Fragment>
@@ -78,9 +83,7 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
 };
 export default ProjectsPage;
 
-export const getServerSideProps: GetServerSideProps<{ user: TypeUser; projects: TypeProjects }> = async (
-  ctx: GetServerSidePropsContext
-) => {
+export const getServerSideProps: GetServerSideProps<{ user: TypeUser }> = async (ctx: GetServerSidePropsContext) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
   if (!session) {
@@ -95,10 +98,7 @@ export const getServerSideProps: GetServerSideProps<{ user: TypeUser; projects: 
   const userDataResponse = await axios.get(`${process.env.PUBLIC_BASE_URL}/api/users/by-email/${session.user?.email}`);
   const user: TypeUser = await userDataResponse.data.data;
 
-  const userProjectResponse = await axios.get(`${process.env.PUBLIC_BASE_URL}/api/users/projects/${user._id}`);
-  const projects: TypeProjects = await userProjectResponse.data.data;
-
   return {
-    props: { user, projects },
+    props: { user },
   };
 };
