@@ -7,11 +7,11 @@ import TextPromptImageGenerationSection from "../../../components/Section/TextPr
 import Breadcrumbs from "../../../components/UI/Breadcrumbs";
 import { TypeProject, TypeUser } from "../../../types/types";
 import { addUserProject, generateTextToImage } from "../../../utils/api";
-import { NextAPIClient } from "../../../utils/axiosClient";
 import { generateRandomSeed, instanceOfTextToImageGenParams, reshapeGenParams } from "../../../utils/helpers";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import { TextToImageGenerationParameters } from "../../../types/generationParameter";
 import Alert from "../../../components/UI/Alert";
+import axios from "axios";
 
 const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId, userProject }) => {
   const defaultParams = {
@@ -115,7 +115,7 @@ export const getServerSideProps: GetServerSideProps<{ userId?: Types.ObjectId; u
   }
 
   // Get user if authenticated
-  const userDataResponse = await NextAPIClient.get(`/api/users/by-email/${session.user?.email}`);
+  const userDataResponse = await axios.get(`${process.env.PUBLIC_BASE_URL}/api/users/by-email/${session.user?.email}`);
   const user: TypeUser = await userDataResponse.data.data;
   const userId = user._id;
 
@@ -128,7 +128,9 @@ export const getServerSideProps: GetServerSideProps<{ userId?: Types.ObjectId; u
     };
   }
 
-  const userProjectResponse = await NextAPIClient.get(`/api/users/projects/${userId}/${projectId}`);
+  const userProjectResponse = await axios.get(
+    `${process.env.PUBLIC_BASE_URL}/api/users/projects/${userId}/${projectId}`
+  );
   const userProject = await userProjectResponse.data.data;
 
   return {

@@ -6,12 +6,12 @@ import ProjectsSettingsBar from "../../../components/Section/ProjectsSettingsBar
 import { authOptions } from "../../api/auth/[...nextauth]";
 import ProjectPreviewCard from "../../../components/Card/ProjectPreviewCard";
 import ProjectModal from "../../../components/UI/ProjectModal";
-import { NextAPIClient } from "../../../utils/axiosClient";
 import { TypeProject, TypeProjects, TypeUser } from "../../../types/types";
 import { generateRandomSeed } from "../../../utils/helpers";
 import { Types } from "mongoose";
 import BasicCaptionCard from "../../../components/Card/BasicCaptionCard";
 import { deleteUserProject } from "../../../utils/api";
+import axios from "axios";
 
 const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({
   user,
@@ -87,10 +87,10 @@ export const getServerSideProps: GetServerSideProps<{ user: TypeUser; projects: 
     };
   }
 
-  const userDataResponse = await NextAPIClient.get(`/api/users/by-email/${session.user?.email}`);
+  const userDataResponse = await axios.get(`${process.env.PUBLIC_BASE_URL}/api/users/by-email/${session.user?.email}`);
   const user: TypeUser = await userDataResponse.data.data;
 
-  const userProjectResponse = await NextAPIClient.get(`/api/users/projects/${user._id}`);
+  const userProjectResponse = await axios.get(`${process.env.PUBLIC_BASE_URL}/api/users/projects/${user._id}`);
   const projects: TypeProjects = await userProjectResponse.data.data;
 
   return {

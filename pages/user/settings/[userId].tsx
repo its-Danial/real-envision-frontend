@@ -7,7 +7,6 @@ import LabelTextInput from "../../../components/Inputs/LabelTextInput";
 import SelectInput from "../../../components/Inputs/SelectInput";
 import SettingsAvatar from "../../../components/Inputs/SettingsAvatar";
 import { TypeUser } from "../../../types/types";
-import { NextAPIClient } from "../../../utils/axiosClient";
 import { authOptions } from "../../api/auth/[...nextauth]";
 
 const UserSettingsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
@@ -92,7 +91,7 @@ export const getServerSideProps: GetServerSideProps<{ user: TypeUser }> = async 
     };
   }
 
-  const response = await NextAPIClient.get(`/api/users/by-email/${session.user?.email}`);
+  const response = await axios.get(`${process.env.PUBLIC_BASE_URL}/api/users/by-email/${session.user?.email}`);
   const user: TypeUser = await response.data.data;
 
   return {
