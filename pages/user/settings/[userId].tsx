@@ -8,6 +8,7 @@ import SelectInput from "../../../components/Inputs/SelectInput";
 import SettingsAvatar from "../../../components/Inputs/SettingsAvatar";
 import { TypeUser } from "../../../types/types";
 import { authOptions } from "../../api/auth/[...nextauth]";
+import Head from "next/head";
 
 const UserSettingsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
   const [userData, setUserData] = useState<TypeUser>(user);
@@ -37,44 +38,49 @@ const UserSettingsPage: NextPage<InferGetServerSidePropsType<typeof getServerSid
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center">
-      <div className="max-w-lg w-full p-8 grid gap-5 bg-base-300 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-center">Settings</h1>
-        <SettingsAvatar image={userData.image!} onChange={valueChangeHandler.bind(this, "image")} />
+    <>
+      <Head>
+        <title>Settings | {user.name}</title>
+      </Head>
+      <div className="min-h-screen flex justify-center items-center">
+        <div className="max-w-lg w-full p-8 grid gap-5 bg-base-300 rounded-lg shadow-lg">
+          <h1 className="text-3xl font-bold text-center">Settings</h1>
+          <SettingsAvatar image={userData.image!} onChange={valueChangeHandler.bind(this, "image")} />
 
-        <LabelTextInput
-          label="Name"
-          placeholder="Enter your new name"
-          value={userData.name!}
-          onChange={valueChangeHandler.bind(this, "name")}
-        />
-        <LabelTextInput
-          label="Email"
-          placeholder="Enter your account email"
-          value={userData.email!}
-          disable
-          onChange={valueChangeHandler.bind(this, "email")}
-        />
-        <LabelTextInput
-          label="Profile Description"
-          placeholder="Enter your profile description"
-          value={userData.profileDescription ? userData.profileDescription : ""}
-          disable={userData.profileDescription ? false : true}
-          onChange={valueChangeHandler.bind(this, "profileDescription")}
-        />
-        <SelectInput
-          value={userData.imageDownloadFormat}
-          onChange={valueChangeHandler.bind(this, "imageDownloadFormat")}
-        />
-        <button
-          className={`btn btn-primary ${isLoading && "loading"}`}
-          onClick={saveUserDataHandler}
-          disabled={userData.name.length === 0}
-        >
-          Save
-        </button>
+          <LabelTextInput
+            label="Name"
+            placeholder="Enter your new name"
+            value={userData.name!}
+            onChange={valueChangeHandler.bind(this, "name")}
+          />
+          <LabelTextInput
+            label="Email"
+            placeholder="Enter your account email"
+            value={userData.email!}
+            disable
+            onChange={valueChangeHandler.bind(this, "email")}
+          />
+          <LabelTextInput
+            label="Profile Description"
+            placeholder="Enter your profile description"
+            value={userData.profileDescription ? userData.profileDescription : ""}
+            disable={userData.profileDescription ? false : true}
+            onChange={valueChangeHandler.bind(this, "profileDescription")}
+          />
+          <SelectInput
+            value={userData.imageDownloadFormat}
+            onChange={valueChangeHandler.bind(this, "imageDownloadFormat")}
+          />
+          <button
+            className={`btn btn-primary ${isLoading && "loading"}`}
+            onClick={saveUserDataHandler}
+            disabled={userData.name.length === 0}
+          >
+            Save
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 export default UserSettingsPage;

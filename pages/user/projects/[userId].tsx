@@ -1,8 +1,6 @@
 import { Fragment, useState } from "react";
 import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { getServerSession } from "next-auth";
-import ProjectsBannerSection from "../../../components/Section/ProjectsBannerSection";
-import ProjectsSettingsBar from "../../../components/Section/ProjectsSettingsBar";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import ProjectPreviewCard from "../../../components/Card/ProjectPreviewCard";
 import ProjectModal from "../../../components/UI/ProjectModal";
@@ -12,6 +10,9 @@ import { Types } from "mongoose";
 import BasicCaptionCard from "../../../components/Card/BasicCaptionCard";
 import { deleteUserProject } from "../../../utils/api";
 import axios from "axios";
+import ProjectsBannerSection from "../../../components/Section/ProjectsBannerSection";
+import ProjectsSettingsBar from "../../../components/Section/ProjectsSettingsBar";
+import Head from "next/head";
 
 const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({
   user,
@@ -39,7 +40,11 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
   };
 
   return (
-    <div>
+    <>
+      <Head>
+        <title>Projects | {user.name}</title>
+      </Head>
+
       <ProjectsBannerSection user={user} />
       <ProjectsSettingsBar userId={user._id!} />
       <section className={`${deleteInProgress ? "animate-pulse cursor-not-allowed" : ""} h-full p-10`}>
@@ -68,7 +73,7 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
           onDeleteClick={deleteProjectClickHandler}
         />
       )}
-    </div>
+    </>
   );
 };
 export default ProjectsPage;
