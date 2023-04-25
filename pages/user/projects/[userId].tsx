@@ -1,45 +1,43 @@
-import { Fragment, useEffect, useState } from "react";
+import axios from "axios";
+import { Types } from "mongoose";
 import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../api/auth/[...nextauth]";
-import ProjectPreviewCard from "../../../components/Card/ProjectPreviewCard";
-import ProjectModal from "../../../components/UI/ProjectModal";
-import { TypeProject, TypeProjects, TypeUser } from "../../../types/types";
-import { generateRandomSeed } from "../../../utils/helpers";
-import { Types } from "mongoose";
+import Head from "next/head";
+import { Fragment, useState } from "react";
 import BasicCaptionCard from "../../../components/Card/BasicCaptionCard";
-import { deleteUserProject } from "../../../utils/api";
-import axios from "axios";
+import ProjectPreviewCard from "../../../components/Card/ProjectPreviewCard";
 import ProjectsBannerSection from "../../../components/Section/ProjectsBannerSection";
 import ProjectsSettingsBar from "../../../components/Section/ProjectsSettingsBar";
-import Head from "next/head";
+import Alert from "../../../components/UI/Alert";
+import LoadingIndicator from "../../../components/UI/LoadingIndicator";
+import ProjectModal from "../../../components/UI/ProjectModal";
+import useFetch from "../../../hooks/useFetch";
+import { TypeProjects, TypeUser } from "../../../types/types";
+import { deleteUserProject } from "../../../utils/api";
+import { generateRandomSeed } from "../../../utils/helpers";
+import { authOptions } from "../../api/auth/[...nextauth]";
 
 const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
-  const [projects, setProjects] = useState<TypeProjects>();
+  const { data, error } = useFetch<{ success: boolean; data: TypeProjects }>(`/api/users/projects/${user._id}`, "GET");
 
-  useEffect(() => {
-    axios.get(`/api/users/projects/${user._id}`).then(({ data }) => {
-      setProjects(data.data);
-      console.log(data.data);
-    });
-  }, [user._id]);
+  const projects = data?.data;
 
   const [showModal, setShowModal] = useState(false);
   const [deleteInProgress, setDeleteInProgress] = useState(false);
-  const [openedProject, setOpenedProject] = useState<TypeProject | undefined>(undefined);
+  const [openedProjectId, setOpenedProjectId] = useState<Types.ObjectId | undefined>(undefined);
 
   const projectCardClickHandler = (projectId: Types.ObjectId | undefined) => {
-    const selectedProject = projects?.projects?.find((project) => project._id === projectId);
-    setOpenedProject(selectedProject);
+    // const selectedProject = projects?.projects?.find((project) => project._id === projectId);
+    setOpenedProjectId(projectId);
 
     setShowModal(true);
   };
 
   const deleteProjectClickHandler = async () => {
     setDeleteInProgress(true);
-    const response = await deleteUserProject(user._id!, openedProject?._id!);
+    const response = await deleteUserProject(user._id!, openedProjectId!);
     const updatedProjects = await response.data.data;
-    setProjects(updatedProjects);
+    // setProjects(updatedProjects);
     setDeleteInProgress(false);
     setShowModal(false);
   };
@@ -50,30 +48,37 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
         <title>Projects | {user.name}</title>
       </Head>
 
+      {error && <Alert message="An error occurred, refresh the page" type="error" />}
+
       <ProjectsBannerSection user={user} />
       <ProjectsSettingsBar userId={user._id!} />
       <section className={`${deleteInProgress ? "animate-pulse cursor-not-allowed" : ""} h-full p-10`}>
         <div className={`${deleteInProgress ? "pointer-events-none" : ""} w-full h-full flex flex-wrap gap-10`}>
-          {projects?.projects?.length === 0 ? (
-            <div className="flex justify-center">
-              <BasicCaptionCard title="No projects" text="Navigate to the studio page to create new projects" />
-            </div>
+          {data ? (
+            projects?.projects?.length === 0 ? (
+              <div className="flex justify-center">
+                <BasicCaptionCard title="No projects" text="Navigate to the studio page to create new projects" />
+              </div>
+            ) : (
+              projects?.projects?.map((project) => (
+                <Fragment key={generateRandomSeed()}>
+                  <ProjectPreviewCard onClick={projectCardClickHandler.bind(this, project._id)} project={project} />
+                </Fragment>
+              ))
+            )
           ) : (
-            projects?.projects?.map((project) => (
-              <Fragment key={generateRandomSeed()}>
-                <ProjectPreviewCard onClick={projectCardClickHandler.bind(this, project._id)} project={project} />
-              </Fragment>
-            ))
+            <LoadingIndicator className="mx-auto mt-40" size={40} />
           )}
         </div>
       </section>
-      {showModal && openedProject && (
+      {showModal && openedProjectId && (
         <ProjectModal
           onCloseClick={() => {
             setShowModal(false);
-            setOpenedProject(undefined);
+            setOpenedProjectId(undefined);
           }}
-          project={openedProject}
+          userId={user._id!}
+          projectId={openedProjectId}
           deleteInProgress={deleteInProgress}
           onDeleteClick={deleteProjectClickHandler}
         />

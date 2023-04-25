@@ -20,7 +20,7 @@ const usersSchema = new Schema<TypeUser>({
   },
   imageDownloadFormat: {
     type: String,
-    default: "PNG",
+    default: "JPEG",
     required: true,
   },
 });

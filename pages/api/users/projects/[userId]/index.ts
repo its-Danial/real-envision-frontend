@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import Projects from "../../../../../models/project";
 import { TypeProjects } from "../../../../../types/types";
 import connectMongoDB from "../../../../../utils/connectMongoDB";
-import Projects from "../../../../../models/project";
+import sharp from "sharp";
 
 type Data = {
   success: boolean;
@@ -27,11 +28,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   switch (method) {
     case "GET" /* Get projects by userId */:
       try {
-        const userProjects = await Projects.findOne({ userId: userId });
+        const userProjects = await Projects.findOne<TypeProjects>({ userId: userId });
 
         if (!userProjects) {
           return res.status(400).json({ success: false, message: "No projects by that userId" });
         }
+
+        const { projects } = userProjects;
+        projects;
+
+        /*
+         * get low resolution thumbnail of the first image
+         * this is reduce data size over http request
+         */
+        for await (const project of projects) {
+          // let lowResImages: string[] = [];
+          // for await (const fullResImageByte64String of project.images) {
+          //   //low res images
+          //   const lowResImageByte64String = await lowResImageForAllProjectsDisplay(fullResImageByte64String);
+          //   lowResImages.push(lowResImageByte64String as string);
+          // }
+          // Replace full resolution images with low resolution Images
+          // project.images = lowResImages;
+
+          const lowResThumbnailImageByte64String = await lowResImageForAllProjectsDisplay(project.images.at(0)!);
+
+          project.images = [lowResThumbnailImageByte64String as string];
+        }
+
         res.status(200).json({ success: true, data: userProjects });
       } catch (error) {
         res.status(400).json({ success: false, message: error });
@@ -71,8 +95,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: "20mb",
-      responseLimit: false,
+      sizeLimit: "4mb",
+      responseLimit: "4mb",
     },
   },
+};
+
+// Helper function
+const lowResImageForAllProjectsDisplay = async (imageByte64String: string) => {
+  const quality = 10;
+
+  let imgBuffer = Buffer.from(imageByte64String, "base64");
+
+  try {
+    const bufferData = await sharp(imgBuffer).jpeg({ quality }).toBuffer();
+    const lowResImageString = bufferData.toString("base64");
+    return lowResImageString;
+  } catch (err) {
+    console.log(`lowRes issue ${err}`);
+  }
 };

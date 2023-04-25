@@ -12,6 +12,10 @@ export const generateRandomSeed = () => {
   return Math.floor(Math.random() * 10000);
 };
 
+export const generateFileName = (prompt: string, index: number) => {
+  return `${prompt.substring(0, 15)}...${index}`;
+};
+
 export function convertImageToBase64(imgUrl: string) {
   const image = new Image();
   image.crossOrigin = "anonymous";

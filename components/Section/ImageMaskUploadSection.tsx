@@ -25,7 +25,7 @@ const ImageMaskUploadSection: FC<ImageMaskUploadFormProps> = ({
           <Image
             width={350}
             height={350}
-            src={typeof imageMask === "object" ? URL.createObjectURL(imageMask) : `data:image/png;base64,${imageMask}`}
+            src={typeof imageMask === "object" ? URL.createObjectURL(imageMask) : `data:image/jpeg;base64,${imageMask}`}
             alt="Image Mask"
             className="object-contain h-[80%] w-[80%]"
           />

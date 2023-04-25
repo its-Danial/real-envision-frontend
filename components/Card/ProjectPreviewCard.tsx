@@ -21,7 +21,7 @@ const ProjectPreviewCard: FC<ProjectPreviewCardProps> = ({ onClick, project }) =
       <figure className="px-5 pt-5">
         <img
           // src="https://www.rd.com/wp-content/uploads/2020/07/GettyImages-685031953-e1594928609604.jpg"
-          src={`data:image/png;base64,${project.images.at(0)}`}
+          src={`data:image/jpeg;base64,${project.images.at(0)}`}
           alt={project.generationParameters.prompt + " image"}
           className="rounded-lg"
         />
