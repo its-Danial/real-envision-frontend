@@ -5,6 +5,7 @@ import { ImageToImageGenerationParameters, SuperResolutionGenerationParameters }
 import LabelRangeInput from "../Inputs/LabelRangeInput";
 import LoadingIndicator from "../UI/LoadingIndicator";
 import ImageDownloadContainer from "../UI/ImageDownloadContainer";
+import { generateFileName } from "../../utils/helpers";
 
 type ImageSettingsSectionProps = {
   uploadedImage: File | null;
@@ -52,8 +53,12 @@ const ImageSettingsSection: FC<ImageSettingsSectionProps> = ({
 
           {uploadedImage && generatedImages.length !== 0 && !isLoading && (
             <div className="h-full w-full overflow-auto grid grid-cols-2 gap-4">
-              {generatedImages.map((image) => (
+              {generatedImages.map((image, index) => (
                 <ImageDownloadContainer
+                  downloadImageData={{
+                    byte64Uri: image,
+                    fileName: generateFileName(generationParameters.prompt, index),
+                  }}
                   key={Math.random()}
                   style={`m-auto ${generatedImages.length === 1 ? "col-span-2" : ""}`}
                 >
