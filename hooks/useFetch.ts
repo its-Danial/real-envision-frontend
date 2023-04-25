@@ -56,8 +56,8 @@ function useFetch<T = unknown>(url: string, method: string): State<T> {
       try {
         const response = await axios({ url, method });
 
-        let responseOK = response && response.status === 200 && response.statusText === "OK";
-        if (!responseOK) {
+        // let responseOK = response && response.status === 200 && response.statusText === "OK";
+        if (response.status !== 200) {
           throw new Error(response.statusText);
         }
 
