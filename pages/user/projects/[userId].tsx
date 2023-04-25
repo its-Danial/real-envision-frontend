@@ -20,6 +20,9 @@ import { authOptions } from "../../api/auth/[...nextauth]";
 const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
   const { data, error } = useFetch<{ success: boolean; data: TypeProjects }>(`/api/users/projects/${user._id}`, "GET");
 
+  console.log(data);
+  console.log(error);
+
   const projects = data?.data;
 
   const [showModal, setShowModal] = useState(false);
@@ -48,7 +51,7 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
         <title>Projects | {user.name}</title>
       </Head>
 
-      {error && <Alert message="An error occurred, refresh the page" type="error" />}
+      {error && <Alert message={error.message} type="error" />}
 
       <ProjectsBannerSection user={user} />
       <ProjectsSettingsBar userId={user._id!} />
