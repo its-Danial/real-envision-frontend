@@ -1,7 +1,10 @@
+import { TypeProject } from "./../../../../../types/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { TypeProjects } from "../../../../../types/types";
 import connectMongoDB from "../../../../../utils/connectMongoDB";
 import Projects from "../../../../../models/project";
+import ImageThumbnail from "image-thumbnail";
+import sharp from "sharp";
 
 type Data = {
   success: boolean;
@@ -27,11 +30,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   switch (method) {
     case "GET" /* Get projects by userId */:
       try {
-        const userProjects = await Projects.findOne({ userId: userId });
+        const userProjects = await Projects.findOne<TypeProjects>({ userId: userId });
 
         if (!userProjects) {
           return res.status(400).json({ success: false, message: "No projects by that userId" });
         }
+
+        const { projects } = userProjects;
+        projects;
+
+        // lower resolution image
+        let lowResImages: string[] = [];
+        for (const project of projects) {
+          for await (const fullResImageByte64String of project.images) {
+            //low res images
+            const lowResImageByte64String = await lowResImageForAllProjectsDisplay(fullResImageByte64String);
+            lowResImages.push(lowResImageByte64String as string);
+          }
+        }
+
+        // Replace full resolution images with low resolution Images
+        userProjects.projects.forEach((project) => {
+          project.images = lowResImages;
+        });
+
         res.status(200).json({ success: true, data: userProjects });
       } catch (error) {
         res.status(400).json({ success: false, message: error });
@@ -75,4 +97,18 @@ export const config = {
       responseLimit: false,
     },
   },
+};
+
+const lowResImageForAllProjectsDisplay = async (imageByte64String: string) => {
+  const quality = 10;
+
+  let imgBuffer = Buffer.from(imageByte64String, "base64");
+
+  try {
+    const bufferData = await sharp(imgBuffer).jpeg({ quality }).toBuffer();
+    const lowResImageString = bufferData.toString("base64");
+    return lowResImageString;
+  } catch (err) {
+    console.log(`lowRes issue ${err}`);
+  }
 };
