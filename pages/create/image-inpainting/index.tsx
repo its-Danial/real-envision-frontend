@@ -105,7 +105,6 @@ const ImageInpaintingPage: NextPage = () => {
     }
 
     if (uploadedImage && imageMask) {
-      // TODO: Fix for when mask is generated
       setGeneratedImageIsLoading(true);
       const formData = new FormData();
       formData.append("initial_image", uploadedImage, uploadedImage.name);
