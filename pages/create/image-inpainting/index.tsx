@@ -6,18 +6,21 @@ import TextPromptImageGenerationSection from "../../../components/Section/TextPr
 import Alert from "../../../components/UI/Alert";
 import Breadcrumbs from "../../../components/UI/Breadcrumbs";
 import { ImageInpaintingGenerationParameters } from "../../../types/generationParameter";
-import { createImageMask, generateImageInpainting } from "../../../utils/api";
+import { addUserProject, createImageMask, generateImageInpainting } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/helpers";
-import { NextPage } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { dataURLtoFile } from "../../../utils/helpers";
+import { Types } from "mongoose";
+import { authOptions } from "../../api/auth/[...nextauth]";
+import { getServerSession } from "next-auth";
+import axios from "axios";
+import { TypeUser } from "../../../types/types";
 
-const ImageInpaintingPage: NextPage = () => {
+const ImageInpaintingPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId }) => {
   const generationSectionScrollRef = useRef<null | HTMLDivElement>(null);
 
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const [imageMask, setImageMask] = useState<File | null>(null);
-
-  console.log(imageMask);
 
   const [generationParameters, setGenerationParameters] = useState<ImageInpaintingGenerationParameters>({
     prompt: "",
@@ -33,12 +36,19 @@ const ImageInpaintingPage: NextPage = () => {
   enum AlertMessage {
     InitialImageMissing = "Please upload Initial Image first",
     BothImagesMissing = "Please upload Images first",
+    SavingUserProject = "Saving project data...",
+    SavedSuccessfully = "Saved the project successfully!",
+    ErrorSaving = "An error occurred while saving image, please try again",
   }
 
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [generatedImageIsLoading, setGeneratedImageIsLoading] = useState(false);
   const [maskIsLoading, setMaskIsLoading] = useState(false);
-  const [alert, setAlert] = useState({ show: false, message: AlertMessage.InitialImageMissing });
+  const [alert, setAlert] = useState<{
+    show: boolean;
+    message: AlertMessage;
+    type: "info" | "success" | "warning" | "error";
+  }>({ show: false, message: AlertMessage.InitialImageMissing, type: "info" });
 
   const uploadImageMaskHandler = (image: File) => {
     if (!uploadedImage) {
@@ -92,14 +102,13 @@ const ImageInpaintingPage: NextPage = () => {
     setGenerationParameters((prevState) => {
       return { ...prevState, [id]: value };
     });
-    console.log(generationParameters);
   };
 
   const onGenerateClickHandler = async () => {
     if (!uploadedImage && !imageMask) {
-      setAlert({ show: true, message: AlertMessage.BothImagesMissing });
+      setAlert({ show: true, message: AlertMessage.BothImagesMissing, type: "warning" });
       setTimeout(() => {
-        setAlert({ show: false, message: AlertMessage.InitialImageMissing });
+        setAlert({ show: false, message: AlertMessage.InitialImageMissing, type: "warning" });
       }, 3000);
       return;
     }
@@ -115,10 +124,33 @@ const ImageInpaintingPage: NextPage = () => {
         formData.append(key, generationParameters[key]);
       }
       const response = await generateImageInpainting(formData);
-      const data = await response.data;
-      console.log(data);
-      setGeneratedImages(data);
+      const result = await response.data;
+      setGeneratedImages(result);
       setGeneratedImageIsLoading(false);
+
+      if (userId) {
+        try {
+          setAlert({ show: true, message: AlertMessage.SavingUserProject, type: "info" });
+          const response = await addUserProject(userId, {
+            tool: "Image inpainting",
+            model: "runwayml/stable-diffusion-inpainting",
+            images: result,
+            generationParameters: generationParameters,
+            timeStamp: new Date(),
+          });
+          setAlert({ show: true, message: AlertMessage.SavedSuccessfully, type: "success" });
+          setTimeout(() => {
+            setAlert({ show: false, message: AlertMessage.InitialImageMissing, type: "info" });
+          }, 3000);
+          console.log(response);
+        } catch (error) {
+          setAlert({ show: true, message: AlertMessage.ErrorSaving, type: "error" });
+          setTimeout(() => {
+            setAlert({ show: false, message: AlertMessage.InitialImageMissing, type: "info" });
+          }, 3000);
+          console.log(error);
+        }
+      }
     }
   };
   return (
@@ -129,7 +161,7 @@ const ImageInpaintingPage: NextPage = () => {
       </Head>
 
       <>
-        {alert.show && <Alert message={alert.message} type="info" />}
+        {alert.show && <Alert message={alert.message} type={alert.type} />}
 
         <div className="h-screen">
           <Breadcrumbs
@@ -151,6 +183,8 @@ const ImageInpaintingPage: NextPage = () => {
                     onClick={() => {
                       setUploadedImage(null);
                       setImageMask(null);
+                      setGeneratedImageIsLoading(false);
+                      setMaskIsLoading(false);
                     }}
                   >
                     Remove
@@ -182,3 +216,24 @@ const ImageInpaintingPage: NextPage = () => {
   );
 };
 export default ImageInpaintingPage;
+
+export const getServerSideProps: GetServerSideProps<{ userId?: Types.ObjectId }> = async (
+  ctx: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+
+  if (!session) {
+    return {
+      props: {},
+    };
+  }
+
+  // Get user if authenticated
+  const userDataResponse = await axios.get(`${process.env.PUBLIC_BASE_URL}/api/users/by-email/${session.user?.email}`);
+  const user: TypeUser = await userDataResponse.data.data;
+  const userId = user._id;
+
+  return {
+    props: { userId },
+  };
+};
