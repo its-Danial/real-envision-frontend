@@ -13,7 +13,7 @@ const ProjectPreviewCard: FC<ProjectPreviewCardProps> = ({ onClick, project }) =
     if (dateDiff === 0) {
       return "Today";
     }
-    return `${dateDiff} days's ago`;
+    return `${dateDiff} days ago`;
   };
 
   return (
