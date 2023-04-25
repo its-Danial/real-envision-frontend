@@ -4,11 +4,13 @@ import { FC } from "react";
 import { BiCustomize, BiDownload, BiTrash } from "react-icons/bi";
 import { ImMagicWand } from "react-icons/im";
 import { RiImageEditFill } from "react-icons/ri";
-import { generateRandomSeed } from "../../utils/helpers";
+import { saveAs } from "file-saver";
+import { generateFileName, generateRandomSeed } from "../../utils/helpers";
 import Param from "./Param";
 import useFetch from "../../hooks/useFetch";
 import { TypeProject } from "../../types/types";
 import LoadingIndicator from "./LoadingIndicator";
+import ImageDownloadContainer from "./ImageDownloadContainer";
 
 type ProjectModalProps = {
   onCloseClick: () => void;
@@ -26,6 +28,17 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, onDeleteClick, user
   );
 
   const project = data?.data;
+
+  const downloadAllImagesClickHandler = () => {
+    if (!project) return;
+    const images = project.images;
+    for (let index = 0; index < images.length; index++) {
+      saveAs(
+        `data:image/jpeg;base64,${images[index]}`,
+        `${generateFileName(project.generationParameters.prompt, index)}.jpeg`
+      );
+    }
+  };
 
   return (
     <>
@@ -64,13 +77,20 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, onDeleteClick, user
               </div>
               {/* body (images) */}
               <div className="relative px-5 py-3 flex-auto border-t border-solid border-base-300">
-                {project.images.map((imageString) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                {project.images.map((imageString, index) => (
+                  <ImageDownloadContainer
                     key={generateRandomSeed()}
-                    src={`data:image/png;base64,${imageString}`}
-                    alt={project.generationParameters.prompt + " image"}
-                  />
+                    downloadImageData={{
+                      byte64Uri: imageString,
+                      fileName: generateFileName(project.generationParameters.prompt, index),
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`data:image/jpeg;base64,${imageString}`}
+                      alt={project.generationParameters.prompt + " image"}
+                    />
+                  </ImageDownloadContainer>
                 ))}
               </div>
               {/*Delete and download*/}
@@ -79,7 +99,7 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, onDeleteClick, user
                   disabled={deleteInProgress}
                   className="btn btn-sm ease-linear transition-all duration-150"
                   type="button"
-                  onClick={onCloseClick}
+                  onClick={downloadAllImagesClickHandler}
                 >
                   <BiDownload size={16} />
                 </button>

@@ -1,11 +1,12 @@
 import { FC, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { ImageInpaintingGenerationParameters, TextToImageGenerationParameters } from "../../types/generationParameter";
+import { generateFileName } from "../../utils/helpers";
 import BasicCaptionCard from "../Card/BasicCaptionCard";
 import LabelRangeInput from "../Inputs/LabelRangeInput";
 import NegativePromptInput from "../Inputs/NegativePromptInput";
-import LoadingIndicator from "../UI/LoadingIndicator";
 import ImageDownloadContainer from "../UI/ImageDownloadContainer";
+import LoadingIndicator from "../UI/LoadingIndicator";
 
 type TextPromptImageGenerationSectionProps = {
   generationParameters: TextToImageGenerationParameters | ImageInpaintingGenerationParameters;
@@ -154,6 +155,10 @@ const TextPromptImageGenerationSection: FC<TextPromptImageGenerationSectionProps
               // eslint-disable-next-line @next/next/no-img-element
               <ImageDownloadContainer
                 key={Math.random()}
+                downloadImageData={{
+                  byte64Uri: image,
+                  fileName: generateFileName(generationParameters.prompt, index),
+                }}
                 style={`rounded-lg m-auto ${generatedImages.length === 1 ? "col-span-4" : "col-span-2"}`}
               >
                 <img
