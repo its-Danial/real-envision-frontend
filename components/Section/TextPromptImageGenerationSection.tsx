@@ -157,7 +157,7 @@ const TextPromptImageGenerationSection: FC<TextPromptImageGenerationSectionProps
                 style={`rounded-lg m-auto ${generatedImages.length === 1 ? "col-span-4" : "col-span-2"}`}
               >
                 <img
-                  src={`data:image/png;base64,${image}`}
+                  src={`data:image/jpeg;base64,${image}`}
                   alt={generationParameters.prompt + ` image_${index}`}
                   className={`rounded-lg m-auto`}
                 />

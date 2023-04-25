@@ -57,7 +57,7 @@ const ImageSettingsSection: FC<ImageSettingsSectionProps> = ({
                   key={Math.random()}
                   style={`m-auto ${generatedImages.length === 1 ? "col-span-2" : ""}`}
                 >
-                  <img src={`data:image/png;base64,${image}`} alt="generated image" className={`rounded-lg `} />
+                  <img src={`data:image/jpeg;base64,${image}`} alt="generated image" className={`rounded-lg `} />
                 </ImageDownloadContainer>
               ))}
             </div>

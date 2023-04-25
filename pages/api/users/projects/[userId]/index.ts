@@ -92,14 +92,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 }
 
-// export const config = {
-//   api: {
-//     bodyParser: {
-//       sizeLimit: "20mb",
-//       responseLimit: false,
-//     },
-//   },
-// };
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "4mb",
+      responseLimit: "4mb",
+    },
+  },
+};
 
 // Helper function
 const lowResImageForAllProjectsDisplay = async (imageByte64String: string) => {
