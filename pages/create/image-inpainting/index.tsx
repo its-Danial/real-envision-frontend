@@ -9,12 +9,15 @@ import { ImageInpaintingGenerationParameters } from "../../../types/generationPa
 import { createImageMask, generateImageInpainting } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/helpers";
 import { NextPage } from "next";
+import { dataURLtoFile } from "../../../utils/helpers";
 
 const ImageInpaintingPage: NextPage = () => {
   const generationSectionScrollRef = useRef<null | HTMLDivElement>(null);
 
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
-  const [imageMask, setImageMask] = useState<File | string | null>(null);
+  const [imageMask, setImageMask] = useState<File | null>(null);
+
+  console.log(imageMask);
 
   const [generationParameters, setGenerationParameters] = useState<ImageInpaintingGenerationParameters>({
     prompt: "",
@@ -71,12 +74,15 @@ const ImageInpaintingPage: NextPage = () => {
     setMaskIsLoading(true);
 
     const formData = new FormData();
-    formData.append("image", uploadedImage, uploadedImage.name);
+
+    formData.append("image", uploadedImage);
 
     const response = await createImageMask(formData);
     const data = response.data;
 
-    setImageMask(data);
+    const generatedImageMaskFile = dataURLtoFile(data, "generated_image_mask.jpeg");
+
+    setImageMask(generatedImageMaskFile);
     setMaskIsLoading(false);
 
     generationSectionScrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -103,7 +109,8 @@ const ImageInpaintingPage: NextPage = () => {
       setGeneratedImageIsLoading(true);
       const formData = new FormData();
       formData.append("initial_image", uploadedImage, uploadedImage.name);
-      formData.append("mask_image", imageMask, "mask_image");
+
+      formData.append("mask_image", imageMask, imageMask.name);
       for (const key in generationParameters) {
         // @ts-ignore
         formData.append(key, generationParameters[key]);

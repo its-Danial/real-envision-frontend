@@ -41,7 +41,9 @@ const ImageToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSid
 
   const preLoadedImages = userProject ? userProject.images : [];
 
-  const preLoadedFile = userProject ? dataURLtoFile(preLoadedImages[0], userProject.generationParameters.prompt) : null;
+  const preLoadedFile = userProject
+    ? dataURLtoFile(preLoadedImages[0], `${userProject.generationParameters.prompt}.jpeg`)
+    : null;
 
   const mainScrollRef = useRef<null | HTMLDivElement>(null);
 
