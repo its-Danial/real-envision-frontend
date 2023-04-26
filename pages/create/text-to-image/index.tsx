@@ -43,8 +43,9 @@ const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSide
 
   const onGenerateClickHandler = async () => {
     setIsLoading(true);
-    const result = await generateTextToImage(generationParameters);
-    setGeneratedImages(result.data);
+    const response = await generateTextToImage(generationParameters);
+    const result = await response.data;
+    setGeneratedImages(result);
     setIsLoading(false);
 
     if (userId) {
@@ -53,7 +54,7 @@ const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSide
         const response = await addUserProject(userId, {
           tool: "Text to image",
           model: "runwayml/stable-diffusion-v1-5",
-          images: result.data,
+          images: result,
           generationParameters: generationParameters,
           timeStamp: new Date(),
         });

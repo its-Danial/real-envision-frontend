@@ -4,11 +4,17 @@ import ImageSettingsSection from "../../../components/Section/ImageSettingsSecti
 import ImageUploadForm from "../../../components/Section/ImageUploadForm";
 import Breadcrumbs from "../../../components/UI/Breadcrumbs";
 import { SuperResolutionGenerationParameters } from "../../../types/generationParameter";
-import { generateSuperResolution } from "../../../utils/api";
+import { addUserProject, generateSuperResolution } from "../../../utils/api";
 import { generateRandomSeed } from "../../../utils/helpers";
-import { NextPage } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
+import { Types } from "mongoose";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../api/auth/[...nextauth]";
+import axios from "axios";
+import { TypeUser } from "../../../types/types";
+import Alert from "../../../components/UI/Alert";
 
-const SuperResolutionPage: NextPage = () => {
+const SuperResolutionPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId }) => {
   const mainScrollRef = useRef<null | HTMLDivElement>(null);
 
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
@@ -25,10 +31,19 @@ const SuperResolutionPage: NextPage = () => {
 
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState<{
+    show: boolean;
+    message: string;
+    type: "info" | "success" | "warning" | "error";
+  }>({ show: false, message: "", type: "info" });
+
   const initialImageSubmitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!uploadedImage) {
-      alert("Upload an image");
+      setAlert({ show: true, message: "Please upload initial image first", type: "warning" });
+      setTimeout(() => {
+        setAlert({ show: false, message: "", type: "info" });
+      }, 3000);
       return;
     }
     mainScrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -42,11 +57,17 @@ const SuperResolutionPage: NextPage = () => {
 
   const onGenerateClickHandler = async () => {
     if (!uploadedImage) {
-      alert("Upload an image");
+      setAlert({ show: true, message: "Please upload initial image first", type: "warning" });
+      setTimeout(() => {
+        setAlert({ show: false, message: "", type: "info" });
+      }, 3000);
       return;
     }
     if (generationParameters.prompt.length === 0) {
-      alert("Prompt is required");
+      setAlert({ show: true, message: "Please enter prompt", type: "warning" });
+      setTimeout(() => {
+        setAlert({ show: false, message: "", type: "info" });
+      }, 3000);
       return;
     }
 
@@ -61,11 +82,37 @@ const SuperResolutionPage: NextPage = () => {
     }
 
     const response = await generateSuperResolution(formData);
-    const data = await response.data;
+    const result = await response.data;
 
-    console.log(data);
-    setGeneratedImages(data);
+    console.log(result);
+    setGeneratedImages(result);
     setIsLoading(false);
+
+    console.log(result);
+
+    if (userId) {
+      try {
+        setAlert({ show: true, message: "Saving project data...", type: "info" });
+        const response = await addUserProject(userId, {
+          tool: "Super-Resolution",
+          model: "stabilityai/stable-diffusion-x4-upscaler",
+          images: result,
+          generationParameters: generationParameters,
+          timeStamp: new Date(),
+        });
+        setAlert({ show: true, message: "Saved the project successfully!", type: "success" });
+        setTimeout(() => {
+          setAlert({ show: false, message: "", type: "info" });
+        }, 3000);
+        console.log(response);
+      } catch (error) {
+        setAlert({ show: true, message: "An error occurred while saving image, please try again", type: "error" });
+        setTimeout(() => {
+          setAlert({ show: false, message: "", type: "info" });
+        }, 3000);
+        console.log(error);
+      }
+    }
   };
 
   return (
@@ -78,6 +125,8 @@ const SuperResolutionPage: NextPage = () => {
       <Breadcrumbs
         links={[{ title: "Home", href: "/" }, { title: "Studio", href: "/create" }, { title: "Super Resolution Tool" }]}
       />
+
+      {alert.show && <Alert message={alert.message} type={alert.type} />}
 
       {/* note upload image area */}
       <div className="h-screen flex justify-center">
@@ -115,3 +164,24 @@ const SuperResolutionPage: NextPage = () => {
   );
 };
 export default SuperResolutionPage;
+
+export const getServerSideProps: GetServerSideProps<{ userId?: Types.ObjectId }> = async (
+  ctx: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+
+  if (!session) {
+    return {
+      props: {},
+    };
+  }
+
+  // Get user if authenticated
+  const userDataResponse = await axios.get(`${process.env.PUBLIC_BASE_URL}/api/users/by-email/${session.user?.email}`);
+  const user: TypeUser = await userDataResponse.data.data;
+  const userId = user._id;
+
+  return {
+    props: { userId },
+  };
+};
