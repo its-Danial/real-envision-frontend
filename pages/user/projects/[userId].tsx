@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { getServerSession } from "next-auth";
 import Head from "next/head";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import BasicCaptionCard from "../../../components/Card/BasicCaptionCard";
 import ProjectPreviewCard from "../../../components/Card/ProjectPreviewCard";
 import ProjectsBannerSection from "../../../components/Section/ProjectsBannerSection";
@@ -20,10 +20,14 @@ import { authOptions } from "../../api/auth/[...nextauth]";
 const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
   const { data, error } = useFetch<{ success: boolean; data: TypeProjects }>(`/api/users/projects/${user._id}`, "GET");
 
-  console.log(data);
-  console.log(error);
+  console.log("fetched projects", data);
 
-  const projects = data?.data;
+  const [projects, setProjects] = useState<TypeProjects>();
+
+  useEffect(() => {
+    if (!data?.data) return;
+    setProjects(data.data);
+  }, [data?.data]);
 
   const [showModal, setShowModal] = useState(false);
   const [deleteInProgress, setDeleteInProgress] = useState(false);
@@ -39,8 +43,11 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
   const deleteProjectClickHandler = async () => {
     setDeleteInProgress(true);
     const response = await deleteUserProject(user._id!, openedProjectId!);
-    const updatedProjects = await response.data.data;
-    // setProjects(updatedProjects);
+    const data = await response.data;
+    const updatedProjects = await data.data;
+    console.log("updated projects", updatedProjects);
+
+    setProjects(updatedProjects);
     setDeleteInProgress(false);
     setShowModal(false);
   };

@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import Projects from "../../../../../models/project";
 import { TypeProject, TypeProjects } from "../../../../../types/types";
 import connectMongoDB from "../../../../../utils/connectMongoDB";
+import { lowResImageForAllProjectsDisplay } from ".";
 
 type Data = {
   success: boolean;
@@ -61,7 +62,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           return res.status(400).json({ success: false, message: "No projects by that userId" });
         }
 
-        res.status(200).json({ success: true });
+        const { projects } = userProjects;
+
+        /*
+         * get low resolution thumbnail of the first image
+         * this is reduce data size over http request
+         */
+        for await (const project of projects) {
+          const lowResThumbnailImageByte64String = await lowResImageForAllProjectsDisplay(project.images.at(0)!);
+
+          project.images = [lowResThumbnailImageByte64String as string];
+        }
+
+        res.status(200).json({ success: true, data: userProjects });
       } catch (error) {
         res.status(400).json({ success: false, message: error });
       }
