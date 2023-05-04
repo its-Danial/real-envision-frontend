@@ -19,7 +19,7 @@ const ProjectsBannerSection: FC<ProjectsBannerSectionProps> = ({ user }) => {
             </div>
             <div className="flex flex-col justify-start text-primary-content">
               <h3 className="text-2xl mb-[5px] font-semibold">{user.name}</h3>
-              <h4 className="text-base mb-[3px] font-normal">{user.email}</h4>
+              <h4 className="text-base mb-[3px] font-normal">not_someone@email.com</h4>
               <span className="text-sm font-normal">{user.profileDescription}</span>
             </div>
           </div>
