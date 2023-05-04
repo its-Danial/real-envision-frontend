@@ -61,7 +61,7 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
       {error && <Alert message={error.message} type="error" />}
 
       <ProjectsBannerSection user={user} />
-      <ProjectsSettingsBar userId={user._id!} />
+      <ProjectsSettingsBar userId={user._id!} totalProjects={projects?.projects.length!} />
       <section className={`${deleteInProgress ? "animate-pulse cursor-not-allowed" : ""} h-full p-10`}>
         <div className={`${deleteInProgress ? "pointer-events-none" : ""} w-full h-full flex flex-wrap gap-10`}>
           {data ? (
