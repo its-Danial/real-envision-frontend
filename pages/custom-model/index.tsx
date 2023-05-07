@@ -64,9 +64,9 @@ for epoch in range(epochs):
         <title>Custom Model | RealEnvision</title>
       </Head>
       <div className="min-h-screen">
-        <div className="w-full mx-auto max-w-5xl px-2">
+        <div className="w-full mx-auto max-w-5xl px-2 py-10">
           {/* Caption */}
-          <div className="py-10 text-center">
+          <div className="pb-10 text-center">
             <h1 className="font-semibold text-5xl">Building a Diffusion Model</h1>
             <p className="mt-5 text-sm text-gray-600 dark:text-gray-400">
               Here I will cover how a basic diffusion model can be built
