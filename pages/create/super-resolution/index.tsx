@@ -15,19 +15,21 @@ import { TypeUser } from "../../../types/types";
 import Alert from "../../../components/UI/Alert";
 
 const SuperResolutionPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId }) => {
-  const mainScrollRef = useRef<null | HTMLDivElement>(null);
-
-  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
-
-  const [generationParameters, setGenerationParameters] = useState<SuperResolutionGenerationParameters>({
+  const defaultGenParams = {
     prompt: "",
-
     num_inference_steps: 50,
     guidance_scale: 8.5,
     negative_prompt: "",
     num_images_per_prompt: 1,
     seed: generateRandomSeed(),
-  });
+  };
+
+  const mainScrollRef = useRef<null | HTMLDivElement>(null);
+
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+
+  const [generationParameters, setGenerationParameters] =
+    useState<SuperResolutionGenerationParameters>(defaultGenParams);
 
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -84,11 +86,8 @@ const SuperResolutionPage: NextPage<InferGetServerSidePropsType<typeof getServer
     const response = await generateSuperResolution(formData);
     const result = await response.data;
 
-    console.log(result);
     setGeneratedImages(result);
     setIsLoading(false);
-
-    console.log(result);
 
     if (userId) {
       try {
@@ -100,6 +99,7 @@ const SuperResolutionPage: NextPage<InferGetServerSidePropsType<typeof getServer
           generationParameters: generationParameters,
           timeStamp: new Date(),
         });
+        console.log("save response", response);
         setAlert({ show: true, message: "Saved the project successfully!", type: "success" });
         setTimeout(() => {
           setAlert({ show: false, message: "", type: "info" });
@@ -138,7 +138,11 @@ const SuperResolutionPage: NextPage<InferGetServerSidePropsType<typeof getServer
             <div className="space-x-4">
               <button
                 className="btn btn-primary btn-sm mx-auto normal-case w-44"
-                onClick={() => setUploadedImage(null)}
+                onClick={() => {
+                  setUploadedImage(null);
+                  setGenerationParameters(defaultGenParams);
+                  setGeneratedImages([]);
+                }}
               >
                 Remove
               </button>

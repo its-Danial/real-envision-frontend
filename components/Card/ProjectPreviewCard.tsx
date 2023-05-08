@@ -1,4 +1,5 @@
 import { FC } from "react";
+import Image from "next/image";
 import { TypeProject } from "../../types/types";
 import { dateDiffInDays } from "../../utils/helpers";
 
@@ -19,11 +20,13 @@ const ProjectPreviewCard: FC<ProjectPreviewCardProps> = ({ onClick, project }) =
   return (
     <div onClick={onClick} className="card w-80 bg-base-100 shadow-xl cursor-pointer">
       <figure className="px-5 pt-5">
-        <img
-          // src="https://www.rd.com/wp-content/uploads/2020/07/GettyImages-685031953-e1594928609604.jpg"
+        <Image
           src={`data:image/jpeg;base64,${project.images.at(0)}`}
           alt={project.generationParameters.prompt + " image"}
-          className="rounded-lg"
+          width="0"
+          height="0"
+          sizes="100vw"
+          className="w-full h-auto rounded-lg"
         />
       </figure>
       <div className="card-body px-5 py-4 gap-1">

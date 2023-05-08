@@ -17,21 +17,22 @@ import axios from "axios";
 import { TypeUser } from "../../../types/types";
 
 const ImageInpaintingPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId }) => {
-  const generationSectionScrollRef = useRef<null | HTMLDivElement>(null);
-
-  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
-  const [imageMask, setImageMask] = useState<File | null>(null);
-
-  const [generationParameters, setGenerationParameters] = useState<ImageInpaintingGenerationParameters>({
+  const defaultGenParams = {
     prompt: "",
-    height: 512,
-    width: 512,
     num_inference_steps: 50,
     guidance_scale: 8.5,
     negative_prompt: "",
     num_images_per_prompt: 1,
     seed: generateRandomSeed(),
-  });
+  };
+
+  const generationSectionScrollRef = useRef<null | HTMLDivElement>(null);
+
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+  const [imageMask, setImageMask] = useState<File | null>(null);
+
+  const [generationParameters, setGenerationParameters] =
+    useState<ImageInpaintingGenerationParameters>(defaultGenParams);
 
   enum AlertMessage {
     InitialImageMissing = "Please upload Initial Image first",
@@ -62,7 +63,6 @@ const ImageInpaintingPage: NextPage<InferGetServerSidePropsType<typeof getServer
       }, 3000);
       return;
     }
-    console.log(image);
     setImageMask(image);
 
     generationSectionScrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -183,8 +183,10 @@ const ImageInpaintingPage: NextPage<InferGetServerSidePropsType<typeof getServer
                     onClick={() => {
                       setUploadedImage(null);
                       setImageMask(null);
+                      setGenerationParameters(defaultGenParams);
                       setGeneratedImageIsLoading(false);
                       setMaskIsLoading(false);
+                      setGeneratedImages([]);
                     }}
                   >
                     Remove
@@ -209,6 +211,7 @@ const ImageInpaintingPage: NextPage<InferGetServerSidePropsType<typeof getServer
             isLoading={generatedImageIsLoading}
             onGenerateClickHandler={onGenerateClickHandler}
             onSettingsChangeHandler={onSettingsChangeHandler}
+            showHeightWidth={false}
           />
         </div>
       </>

@@ -11,6 +11,7 @@ import useFetch from "../../hooks/useFetch";
 import { TypeProject } from "../../types/types";
 import LoadingIndicator from "./LoadingIndicator";
 import ImageDownloadContainer from "./ImageDownloadContainer";
+import Image from "next/image";
 
 type ProjectModalProps = {
   onCloseClick: () => void;
@@ -76,7 +77,7 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, onDeleteClick, user
                 </button>
               </div>
               {/* body (images) */}
-              <div className="relative px-5 py-3 flex-auto border-t border-solid border-base-300">
+              <div className="relative px-5 py-3 mx-auto flex-auto border-t border-solid border-base-300">
                 {project.images.map((imageString, index) => (
                   <ImageDownloadContainer
                     key={generateRandomSeed()}
@@ -85,10 +86,13 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, onDeleteClick, user
                       fileName: generateFileName(project.generationParameters.prompt, index),
                     }}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={`data:image/jpeg;base64,${imageString}`}
                       alt={project.generationParameters.prompt + " image"}
+                      width="0"
+                      height="0"
+                      sizes="100vw"
+                      className="w-full h-auto"
                     />
                   </ImageDownloadContainer>
                 ))}

@@ -14,6 +14,7 @@ type TextPromptImageGenerationSectionProps = {
   isLoading: boolean;
   onGenerateClickHandler: () => void;
   generatedImages: string[];
+  showHeightWidth: boolean;
 };
 
 const TextPromptImageGenerationSection: FC<TextPromptImageGenerationSectionProps> = ({
@@ -22,6 +23,7 @@ const TextPromptImageGenerationSection: FC<TextPromptImageGenerationSectionProps
   isLoading,
   onGenerateClickHandler,
   generatedImages,
+  showHeightWidth,
 }) => {
   const [showSetting, setShowSetting] = useState(false);
 
@@ -62,7 +64,7 @@ const TextPromptImageGenerationSection: FC<TextPromptImageGenerationSectionProps
               value={generationParameters.negative_prompt}
               onChange={onSettingsChangeHandler}
             />
-            <div className="flex justify-between">
+            <div className={`flex ${showHeightWidth ? "justify-between" : "justify-evenly"}`}>
               <div className="flex basis-4/5 space-x-6">
                 <LabelRangeInput
                   title="Guidance Scale"
@@ -99,7 +101,7 @@ const TextPromptImageGenerationSection: FC<TextPromptImageGenerationSectionProps
                 />
               </div>
               <div className="flex justify-end space-x-6">
-                <div className="basis-[40%] flex flex-col space-y-1 justify-between">
+                <div className={`${showHeightWidth ? "basis-[40%]" : ""} flex flex-col space-y-1 justify-between`}>
                   <label className="text-sm font-semibold">Seed</label>
                   <input
                     type="number"
@@ -113,34 +115,40 @@ const TextPromptImageGenerationSection: FC<TextPromptImageGenerationSectionProps
                     className="input input-bordered input-sm input-primary w-full"
                   />
                 </div>
-                <div className="basis-[30%] flex flex-col space-y-1 justify-between">
-                  <label className="text-sm font-semibold">Width</label>
-                  <input
-                    type="number"
-                    placeholder="Enter Width"
-                    min={32}
-                    max={712}
-                    value={generationParameters.width}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      onSettingsChangeHandler("width", parseInt(event.currentTarget.value))
-                    }
-                    className="input input-bordered input-sm input-primary w-full"
-                  />
-                </div>
-                <div className="basis-[30%] flex flex-col space-y-1 justify-between">
-                  <label className="text-sm font-semibold">Height</label>
-                  <input
-                    type="number"
-                    placeholder="Enter Height"
-                    min={32}
-                    max={712}
-                    value={generationParameters.height}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      onSettingsChangeHandler("height", parseInt(event.currentTarget.value))
-                    }
-                    className="input input-bordered input-sm input-primary w-full"
-                  />
-                </div>
+                {showHeightWidth && (
+                  <>
+                    <div className="basis-[30%] flex flex-col space-y-1 justify-between">
+                      <label className="text-sm font-semibold">Width</label>
+                      <input
+                        type="number"
+                        placeholder="Enter Width"
+                        min={32}
+                        max={712}
+                        // @ts-ignore
+                        value={generationParameters.width}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                          onSettingsChangeHandler("width", parseInt(event.currentTarget.value))
+                        }
+                        className="input input-bordered input-sm input-primary w-full"
+                      />
+                    </div>
+                    <div className="basis-[30%] flex flex-col space-y-1 justify-between">
+                      <label className="text-sm font-semibold">Height</label>
+                      <input
+                        type="number"
+                        placeholder="Enter Height"
+                        min={32}
+                        max={712}
+                        // @ts-ignore
+                        value={generationParameters.height}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                          onSettingsChangeHandler("height", parseInt(event.currentTarget.value))
+                        }
+                        className="input input-bordered input-sm input-primary w-full"
+                      />
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

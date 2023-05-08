@@ -41,8 +41,6 @@ export const getUserProject = async (userId: Types.ObjectId, projectId: Types.Ob
 };
 export const addUserProject = async (userId: Types.ObjectId, projectData: TypeProject) => {
   const response = await axios.put(`/api/users/projects/${userId}`, projectData);
-  // const response = await fetch(`/api/users/projects/${userId}`, { method: "PUT", body: JSON.stringify(projectData) });
-  // const data = response.json();
   return response;
 };
 

@@ -98,6 +98,7 @@ const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSide
         isLoading={isLoading}
         onGenerateClickHandler={onGenerateClickHandler}
         onSettingsChangeHandler={onSettingsChangeHandler}
+        showHeightWidth
       />
     </>
   );
