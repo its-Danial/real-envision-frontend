@@ -148,7 +148,16 @@ const SuperResolutionPage: NextPage<InferGetServerSidePropsType<typeof getServer
         links={[{ title: "Home", href: "/" }, { title: "Studio", href: "/create" }, { title: "Super Resolution Tool" }]}
       />
 
-      {alert.show && <Alert message={alert.message} type={alert.type} />}
+      <Alert
+        message={alert.message}
+        type={alert.type}
+        show={alert.show}
+        onHideClick={() => {
+          setAlert((prevState) => {
+            return { ...prevState, show: false };
+          });
+        }}
+      />
 
       {/* note upload image area */}
       <div className="h-screen flex justify-center">

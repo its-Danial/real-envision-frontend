@@ -155,7 +155,16 @@ const ImageToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSid
         <meta name="Image to Image" content="Page to generate images with Image to Image tool" />
       </Head>
 
-      {alert.show && <Alert message={alert.message} type={alert.type} />}
+      <Alert
+        message={alert.message}
+        type={alert.type}
+        show={alert.show}
+        onHideClick={() => {
+          setAlert((prevState) => {
+            return { ...prevState, show: false };
+          });
+        }}
+      />
 
       <Breadcrumbs
         links={[{ title: "Home", href: "/" }, { title: "Studio", href: "/create" }, { title: "Image To Image Tool" }]}

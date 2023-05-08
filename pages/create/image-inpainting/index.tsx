@@ -153,6 +153,7 @@ const ImageInpaintingPage: NextPage<InferGetServerSidePropsType<typeof getServer
       }
     }
   };
+
   return (
     <>
       <Head>
@@ -161,7 +162,16 @@ const ImageInpaintingPage: NextPage<InferGetServerSidePropsType<typeof getServer
       </Head>
 
       <>
-        {alert.show && <Alert message={alert.message} type={alert.type} />}
+        <Alert
+          message={alert.message}
+          type={alert.type}
+          show={alert.show}
+          onHideClick={() => {
+            setAlert((prevState) => {
+              return { ...prevState, show: false };
+            });
+          }}
+        />
 
         <div className="h-screen">
           <Breadcrumbs

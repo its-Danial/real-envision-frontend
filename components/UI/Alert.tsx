@@ -1,11 +1,13 @@
-import { FC, memo } from "react";
+import { FC, SetStateAction, memo, useState } from "react";
 
 type AlertProps = {
   message: string;
   type: "info" | "success" | "warning" | "error";
+  show: boolean;
+  onHideClick: () => void;
 };
 
-const Alert: FC<AlertProps> = memo(({ message, type }) => {
+const Alert: FC<AlertProps> = memo(({ message, type, show, onHideClick }) => {
   const getAlertStyle = () => {
     switch (type) {
       case "info":
@@ -24,21 +26,30 @@ const Alert: FC<AlertProps> = memo(({ message, type }) => {
     }
   };
   return (
-    <div className="fixed z-50 top-2 w-full flex justify-center items-center">
-      <div className={`mx-8 alert shadow-lg ${getAlertStyle()?.at(0)}`}>
-        <div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            className="stroke-current flex-shrink-0 w-6 h-6"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={getAlertStyle()?.at(1)}></path>
-          </svg>
-          <span>{message}</span>
+    <>
+      {show ? (
+        <div className={`fixed z-50 top-2 w-full flex justify-center items-center`}>
+          <div className={`mx-8 alert shadow-lg ${getAlertStyle()?.at(0)}`}>
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="stroke-current flex-shrink-0 w-6 h-6"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={getAlertStyle()?.at(1)}></path>
+              </svg>
+              <span>{message}</span>
+            </div>
+            <div className="flex-none">
+              <button onClick={onHideClick} className="btn btn-sm btn-outline normal-case">
+                Hide
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      ) : null}
+    </>
   );
 });
 

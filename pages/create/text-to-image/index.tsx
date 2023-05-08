@@ -86,7 +86,16 @@ const TextToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSide
         <meta name="Text to Image" content="Page to generate images with Text to Image tool" />
       </Head>
 
-      {alert.show && <Alert message={alert.message} type={alert.type} />}
+      <Alert
+        message={alert.message}
+        type={alert.type}
+        show={alert.show}
+        onHideClick={() => {
+          setAlert((prevState) => {
+            return { ...prevState, show: false };
+          });
+        }}
+      />
 
       <Breadcrumbs
         links={[{ title: "Home", href: "/" }, { title: "Studio", href: "/create" }, { title: "Text To Image Tool" }]}
