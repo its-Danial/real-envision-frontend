@@ -5,16 +5,25 @@ import ImageUploadForm from "../../../components/Section/ImageUploadForm";
 import Breadcrumbs from "../../../components/UI/Breadcrumbs";
 import { SuperResolutionGenerationParameters } from "../../../types/generationParameter";
 import { addUserProject, generateSuperResolution } from "../../../utils/api";
-import { generateRandomSeed } from "../../../utils/helpers";
+import {
+  dataURLtoFile,
+  generateRandomSeed,
+  instanceOfImageToImageGenParams,
+  reshapeGenParams,
+} from "../../../utils/helpers";
 import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { Types } from "mongoose";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import axios from "axios";
-import { TypeUser } from "../../../types/types";
+import { TypeProject, TypeUser } from "../../../types/types";
 import Alert from "../../../components/UI/Alert";
+import { instanceOfSuperResolutionGenParams } from "../../../utils/helpers";
 
-const SuperResolutionPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ userId }) => {
+const SuperResolutionPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({
+  userId,
+  userProject,
+}) => {
   const defaultGenParams = {
     prompt: "",
     num_inference_steps: 50,
@@ -24,14 +33,28 @@ const SuperResolutionPage: NextPage<InferGetServerSidePropsType<typeof getServer
     seed: generateRandomSeed(),
   };
 
+  const preLoadedParam = userProject
+    ? instanceOfSuperResolutionGenParams(userProject.generationParameters)
+      ? userProject.generationParameters
+      : reshapeGenParams(userProject.generationParameters, "super-resolution")
+    : defaultGenParams;
+
+  const preLoadedImages = userProject ? userProject.images : [];
+
+  const preLoadedFile = userProject
+    ? dataURLtoFile(preLoadedImages[0], `${userProject.generationParameters.prompt}.jpeg`)
+    : null;
+
   const mainScrollRef = useRef<null | HTMLDivElement>(null);
 
-  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<File | null>(preLoadedFile);
 
-  const [generationParameters, setGenerationParameters] =
-    useState<SuperResolutionGenerationParameters>(defaultGenParams);
+  const [generationParameters, setGenerationParameters] = useState(
+    preLoadedParam as SuperResolutionGenerationParameters
+  );
+  console.log("generationParameters", generationParameters);
 
-  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+  const [generatedImages, setGeneratedImages] = useState<string[]>(preLoadedImages);
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState<{
     show: boolean;
@@ -104,7 +127,6 @@ const SuperResolutionPage: NextPage<InferGetServerSidePropsType<typeof getServer
         setTimeout(() => {
           setAlert({ show: false, message: "", type: "info" });
         }, 3000);
-        console.log(response);
       } catch (error) {
         setAlert({ show: true, message: "An error occurred while saving image, please try again", type: "error" });
         setTimeout(() => {
@@ -169,7 +191,7 @@ const SuperResolutionPage: NextPage<InferGetServerSidePropsType<typeof getServer
 };
 export default SuperResolutionPage;
 
-export const getServerSideProps: GetServerSideProps<{ userId?: Types.ObjectId }> = async (
+export const getServerSideProps: GetServerSideProps<{ userId?: Types.ObjectId; userProject?: TypeProject }> = async (
   ctx: GetServerSidePropsContext
 ) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
@@ -185,7 +207,21 @@ export const getServerSideProps: GetServerSideProps<{ userId?: Types.ObjectId }>
   const user: TypeUser = await userDataResponse.data.data;
   const userId = user._id;
 
+  // Get project if loaded from /user/project/[userId] page
+  const { projectId } = ctx.query;
+
+  if (!projectId) {
+    return {
+      props: { userId },
+    };
+  }
+
+  const userProjectResponse = await axios.get(
+    `${process.env.PUBLIC_BASE_URL}/api/users/projects/${userId}/${projectId}`
+  );
+  const userProject = await userProjectResponse.data.data;
+
   return {
-    props: { userId },
+    props: { userId, userProject },
   };
 };

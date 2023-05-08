@@ -68,9 +68,11 @@ const ProjectModal: FC<ProjectModalProps> = ({ onCloseClick, onDeleteClick, user
                     </button>
                   </Link>
 
-                  <button disabled={deleteInProgress} className="btn btn-sm btn-primary normal-case gap-2">
-                    <ImMagicWand /> Enhance
-                  </button>
+                  <Link href={{ pathname: "/create/super-resolution", query: { projectId: String(project._id) } }}>
+                    <button disabled={deleteInProgress} className="btn btn-sm btn-primary normal-case gap-2">
+                      <ImMagicWand /> Enhance
+                    </button>
+                  </Link>
                 </div>
                 <button className="ml-auto float-right btn btn-sm btn-circle" onClick={onCloseClick}>
                   x

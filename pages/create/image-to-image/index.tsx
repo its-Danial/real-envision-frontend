@@ -23,7 +23,7 @@ const ImageToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSid
   userId,
   userProject,
 }) => {
-  const defaultParams = {
+  const defaultGenParams = {
     prompt: "",
     strength: 0.8,
     num_inference_steps: 50,
@@ -37,13 +37,18 @@ const ImageToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSid
     ? instanceOfImageToImageGenParams(userProject.generationParameters)
       ? userProject.generationParameters
       : reshapeGenParams(userProject.generationParameters, "image-to-image")
-    : defaultParams;
+    : defaultGenParams;
 
   const preLoadedImages = userProject ? userProject.images : [];
 
   const preLoadedFile = userProject
     ? dataURLtoFile(preLoadedImages[0], `${userProject.generationParameters.prompt}.jpeg`)
     : null;
+
+  if (userProject) {
+    console.log(instanceOfImageToImageGenParams(userProject.generationParameters));
+    console.log("reshape", reshapeGenParams(userProject.generationParameters, "super-resolution"));
+  }
 
   const mainScrollRef = useRef<null | HTMLDivElement>(null);
 
@@ -169,6 +174,7 @@ const ImageToImagePage: NextPage<InferGetServerSidePropsType<typeof getServerSid
                 onClick={() => {
                   setUploadedImage(null);
                   setGeneratedImages([]);
+                  setGenerationParameters(defaultGenParams);
                 }}
               >
                 Remove

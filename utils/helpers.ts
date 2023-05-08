@@ -82,7 +82,7 @@ export function reshapeGenParams(
         strength: 0.8,
       };
     case "image-inpainting":
-      return { ...baseParams, height: 512, width: 512 };
+      return baseParams;
     case "super-resolution":
       return baseParams;
     default:
@@ -98,9 +98,9 @@ export function instanceOfImageToImageGenParams(object: any): object is ImageToI
 }
 
 export function instanceOfImageInpaintingGenParams(object: any): object is ImageInpaintingGenerationParameters {
-  return "height" in object && "width" in object;
+  return !("height" in object) && !("width" in object) && !("strength" in object);
 }
 
 export function instanceOfSuperResolutionGenParams(object: any): object is SuperResolutionGenerationParameters {
-  return !("height" in object && "width" in object) || !("strength" in object);
+  return !("height" in object) && !("width" in object) && !("strength" in object);
 }

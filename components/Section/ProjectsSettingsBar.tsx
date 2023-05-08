@@ -9,7 +9,6 @@ type ProjectsSettingsBarProps = {
 };
 
 const ProjectsSettingsBar: FC<ProjectsSettingsBarProps> = ({ userId, totalProjects }) => {
-  console.log(totalProjects);
   return (
     <section className="flex px-10 pb-1 border-b border-base-300">
       <div className="flex-1 gap-4">

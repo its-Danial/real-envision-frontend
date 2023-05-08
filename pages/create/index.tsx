@@ -6,8 +6,11 @@ import inpaintingImg from "../../public/assets/studio/models/inpainting.svg";
 import superResolutionImg from "../../public/assets/studio/models/super-resolution.svg";
 import textToImageImg from "../../public/assets/studio/models/text-to-image.svg";
 import { NextPage } from "next";
+import useThemeDetector from "../../hooks/useThemeDetector";
 
 const CreatePage: NextPage = () => {
+  const isDarkTheme = useThemeDetector();
+
   return (
     <main className="my-8">
       <Head>
@@ -17,7 +20,7 @@ const CreatePage: NextPage = () => {
       <div className="flex flex-col items-center justify-center space-y-7">
         <h1 className="text-3xl font-bold">
           Pick the magic of generative{" "}
-          <RoughNotation type="underline" show>
+          <RoughNotation type="underline" show color={isDarkTheme ? "#ff79c6" : "#0d0d0d"} strokeWidth={1.5}>
             Diffusion Model
           </RoughNotation>
         </h1>
