@@ -9,23 +9,23 @@ import NavAvatar from "../Inputs/NavAvatar";
 const NavBar: FC = () => {
   const { data: session } = useSession();
   const [user, setUser] = useState<TypeUser>();
+  const [userIsLoading, setUserIsLoading] = useState(false);
 
   useEffect(() => {
+    const fetchUser = async () => {
+      setUserIsLoading(true);
+      const response = await axios.get(`/api/users/by-email/${session?.user?.email}`);
+      const data = await response.data;
+      setUser(data.data);
+      setUserIsLoading(false);
+    };
+
     if (session) {
-      axios.get(`/api/users/by-email/${session?.user?.email}`).then(({ data }) => setUser(data.data));
+      fetchUser();
     }
   }, [session]);
 
   const router = useRouter();
-
-  const navLinks = [
-    { title: "Studio", href: "/create", basePath: "/create" },
-    { title: "Custom Model", href: "/custom-model", basePath: "/custom-model" },
-  ];
-
-  if (session && user) {
-    navLinks.push({ title: "Projects", href: `/user/projects/${user._id}`, basePath: "/user/projects/" });
-  }
 
   const renderNavButtons = () => {
     if (session) {
@@ -45,17 +45,41 @@ const NavBar: FC = () => {
           <a className="btn btn-ghost normal-case text-xl">RealEnvision</a>
         </Link>
 
-        {navLinks.map((link) => (
-          <Link key={link.title} href={link.href} legacyBehavior>
+        <Link href="/create" legacyBehavior>
+          <a
+            className={`btn btn-sm text-base normal-case rounded-md ${
+              router.pathname.startsWith("/create") ? "btn-active" : "btn-outline"
+            }`}
+          >
+            Studio
+          </a>
+        </Link>
+
+        <Link href="/custom-model" legacyBehavior>
+          <a
+            className={`btn btn-sm text-base normal-case rounded-md ${
+              router.pathname.startsWith("/custom-model") ? "btn-active" : "btn-outline"
+            }`}
+          >
+            Custom Model
+          </a>
+        </Link>
+
+        {session && userIsLoading && (
+          <button className="btn btn-sm text-base normal-case btn-outline rounded-md loading disabled">Projects</button>
+        )}
+
+        {!userIsLoading && user && (
+          <Link href={`/user/projects/${user._id}`} legacyBehavior>
             <a
               className={`btn btn-sm text-base normal-case rounded-md ${
-                router.pathname.startsWith(link.basePath) ? "btn-active" : "btn-outline"
+                router.pathname.startsWith("/user/projects/") ? "btn-active" : "btn-outline"
               }`}
             >
-              {link.title}
+              Projects
             </a>
           </Link>
-        ))}
+        )}
       </div>
 
       {!router.pathname.startsWith("/auth/signin") && <div className="flex-none">{renderNavButtons()}</div>}
