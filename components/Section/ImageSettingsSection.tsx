@@ -117,7 +117,7 @@ const ImageSettingsSection: FC<ImageSettingsSectionProps> = ({
                 rightLabel="More modified"
                 // @ts-ignore
                 value={generationParameters.strength}
-                minValue={0.0}
+                minValue={0.05}
                 maxValue={1}
                 step={0.05}
                 onChange={onSettingsChangeHandler}
