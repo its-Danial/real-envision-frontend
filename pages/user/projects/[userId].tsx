@@ -33,6 +33,21 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
   const [deleteInProgress, setDeleteInProgress] = useState(false);
   const [openedProjectId, setOpenedProjectId] = useState<Types.ObjectId | undefined>(undefined);
 
+  const [alert, setAlert] = useState<{
+    show: boolean;
+    message: string;
+    type: "info" | "success" | "warning" | "error";
+  }>({ show: false, message: "", type: "error" });
+
+  useEffect(() => {
+    console.log("error", error);
+    if (error) {
+      setAlert((prevState) => {
+        return { ...prevState, message: error.message, show: true };
+      });
+    }
+  }, [error]);
+
   const projectCardClickHandler = (projectId: Types.ObjectId | undefined) => {
     // const selectedProject = projects?.projects?.find((project) => project._id === projectId);
     setOpenedProjectId(projectId);
@@ -58,7 +73,16 @@ const ProjectsPage: NextPage<InferGetServerSidePropsType<typeof getServerSidePro
         <title>Projects | {user.name}</title>
       </Head>
 
-      {error && <Alert message={error.message} type="error" />}
+      <Alert
+        message={alert.message}
+        type={alert.type}
+        show={alert.show}
+        onHideClick={() => {
+          setAlert((prevState) => {
+            return { ...prevState, show: false };
+          });
+        }}
+      />
 
       <ProjectsBannerSection user={user} />
       <ProjectsSettingsBar userId={user._id!} totalProjects={projects?.projects.length!} />
