@@ -123,7 +123,7 @@ const TextPromptImageGenerationSection: FC<TextPromptImageGenerationSectionProps
                         type="number"
                         placeholder="Enter Width"
                         min={32}
-                        max={712}
+                        max={512}
                         // @ts-ignore
                         value={generationParameters.width}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -138,7 +138,7 @@ const TextPromptImageGenerationSection: FC<TextPromptImageGenerationSectionProps
                         type="number"
                         placeholder="Enter Height"
                         min={32}
-                        max={712}
+                        max={512}
                         // @ts-ignore
                         value={generationParameters.height}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
