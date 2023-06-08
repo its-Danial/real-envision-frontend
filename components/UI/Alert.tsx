@@ -1,6 +1,6 @@
-import { FC, SetStateAction, memo, useState } from "react";
+import { FC, memo } from "react";
 
-type AlertProps = {
+export type AlertProps = {
   message: string;
   type: "info" | "success" | "warning" | "error";
   show: boolean;
